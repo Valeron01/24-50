@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Шрифты-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=El+Messiri:wght@400;700&display=swap" rel="stylesheet">
+    <!-- -->
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
+    <title>Главная</title>
+</head>
+<body>
+    <header class="header wrapper">
+        <div class="header__panel panel">
+            <div class="header__logo logo">
+                <a href="#" class="logo__link">
+                    <img src="{% static '/img/logo.png' %}" alt="" class="logo__image">
+                </a>
+            </div>
+            <nav class="header__nav menu">
+                <ul class="menu__list list">
+                    <li class="list__item item"><a href="#">Главная</a></li>
+                    <li class="list__item item"><a href="#">Каталог</a></li>
+                    <li id="offer" class="list__item item"><a href="#">Стать продавцом</a></li>
+                    <li id="basket" class="list__item item"><a href="#">Корзина</a></li>
+                    <li id="login" class="list__item item"><a href="#">Вход</a></li>
+                    <li id="register" class="list__item item"><a href="#">Регистрация</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="main_page" class="main wrapper">
+        <div class="main__inner place">
+            <div class="place__category category">
+                <div class="">Категории товаров</div>
+                <ul id="category__list" class="category__list list">
+                    <li id="btn1" class="list__item">Нелюди</li>
+                    <li id="btn2" class="list__item">Категория</li>
+                    <li id="btn3" class="list__item">Категория</li>
+                    <li id="btn4" class="list__item">Категория</li>
+                    <li id="btn5" class="list__item">Категория</li>
+                </ul>
+            </div>
+            <div id="showcase" class="place__showcase showcase showcase__wrapper">
+                <div class="showcase__product product">
+                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+                    <h3 class="product__name">Львумба (Липецкий)</h3>
+                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+                    <p class="product__descipt">Огородный десантник</p>
+                    <div class="product__cost cost">12213</div>
+                    <div class="button buy__btn">В корзину</div>
+                </div>
+                <div class="showcase__product product">
+                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+                    <h3 class="product__name">Львумба (Липецкий)</h3>
+                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+                    <p class="product__descipt">Огородный десантник</p>
+                    <div class="product__cost cost">12213</div>
+                    <div class="button buy__btn">В корзину</div>
+                </div>
+                <div class="showcase__product product">
+                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+                    <h3 class="product__name">Львумба (Липецкий)</h3>
+                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+                    <p class="product__descipt">Огородный десантник</p>
+                    <div class="product__cost cost">12213</div>
+                    <div class="button buy__btn">В корзину</div>
+                </div>
+                <div class="showcase__product product">
+                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+                    <h3 class="product__name">Львумба (Липецкий)</h3>
+                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+                    <p class="product__descipt">Огородный десантник</p>
+                    <div class="product__cost cost">12213</div>
+                    <div class="button buy__btn">В корзину</div>
+                </div>
+                <div class="showcase__product product">
+                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+                    <h3 class="product__name">Львумба (Липецкий)</h3>
+                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+                    <p class="product__descipt">Огородный десантник</p>
+                    <div class="product__cost cost">12213</div>
+                    <div class="button buy__btn">В корзину</div>
+                </div>
+                <div class="showcase__product product">
+                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+                    <h3 class="product__name">Львумба (Липецкий)</h3>
+                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+                    <p class="product__descipt">Огородный десантник</p>
+                    <div class="product__cost cost">12213</div>
+                    <div class="button buy__btn">В корзину</div>
+                </div>
+                <div class="showcase__product product">
+                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+                    <h3 class="product__name">Львумба (Липецкий)</h3>
+                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+                    <p class="product__descipt">Огородный десантник</p>
+                    <div class="product__cost cost">12213</div>
+                    <div class="button buy__btn">В корзину</div>
+                </div>
+                <div class="showcase__product product">
+                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+                    <h3 class="product__name">Львумба (Липецкий)</h3>
+                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+                    <p class="product__descipt">Огородный десантник</p>
+                    <div class="product__cost cost">12213</div>
+                    <div class="button buy__btn">В корзину</div>
+                </div>
+                <div class="showcase__product product">
+                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+                    <h3 class="product__name">Львумба (Липецкий)</h3>
+                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+                    <p class="product__descipt">Огородный десантник</p>
+                    <div class="product__cost cost">12213</div>
+                    <div class="button buy__btn">В корзину</div>
+                </div>
+                <div class="showcase__product product">
+                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+                    <h3 class="product__name">Львумба (Липецкий)</h3>
+                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+                    <p class="product__descipt">Огородный десантник</p>
+                    <div class="product__cost cost">12213</div>
+                    <div class="button buy__btn">В корзину</div>
+                </div>
+                <div class="showcase__product product">
+                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+                    <h3 class="product__name">Львумба (Липецкий)</h3>
+                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+                    <p class="product__descipt">Огородный десантник</p>
+                    <div class="product__cost cost">12213</div>
+                    <div class="button buy__btn">В корзину</div>
+                </div>
+                <div class="showcase__product product">
+                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+                    <h3 class="product__name">Львумба (Липецкий)</h3>
+                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+                    <p class="product__descipt">Огородный десантник</p>
+                    <div class="product__cost cost">12213</div>
+                    <div class="button buy__btn">В корзину</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer wrapper">
+        <div class="footer__nav nav">
+            <div class="nav__contacts contacts">
+                <div class="contacts__user user">
+                    <h4 class="user__name">Чеботарев А.А.</h3>
+                    <p class="user__about">2 курс 1 группа</p>
+                    <div class="user__links links">
+                        <div class="email">
+                            <a class="email-link" href="mailto:artem.cheb40@gmail.com">
+                                <img class="img" src="{% static '/img/email.png' %}" alt="">
+                            </a>
+                        </div>
+                        <div class="vk">
+                            <a class="vk-link" href="https://vk.com/achbtrv">
+                                <img class="img" src="{% static '/img/vk.png' %}" alt="">
+                            </a>
+                        </div>
+                        <div class="git">
+                            <a class="git-link" href="https://github.com/Agrowein">
+                                <img class="img" src="{% static '/img/git.png' %}" alt="">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="contacts__user user">
+                    <h4 class="user__name">Запорожец В.И.</h3>
+                    <p class="user__about">2 курс 4 группа</p>
+                    <div class="user__links links">
+                        <div class="email">
+                            <a href="mailto:electronpochta3011@mail.ru">
+                                <img class="img" src="{% static '/img/email.png' %}" alt="">
+                            </a>
+                        </div>
+                        <div class="vk">
+                            <a class="vk-link" href="https://vk.com/achbtrv">
+                                <img class="vk-img" src="{% static '/img/vk.png' %}" alt="">
+                            </a>
+                        </div>
+                        <div class="git">
+                            <a class="git-link" href="https://github.com/Valeron01">
+                                <img class="img" src="{% static '/img/git.png' %}" alt="">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="footer__location">ВГУ ФКН ИСИТ 2021</p>
+        </div>
+    </footer>
+</body>
+</html>
