@@ -12,4 +12,5 @@ def ask_json(request):
         'GET':request.GET,
         'POST':request.POST
     }
+    
     return JsonResponse(dict)
