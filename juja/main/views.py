@@ -10,9 +10,8 @@ def index(request):
 
 
 def login(request):
-    #rendered_page_html = render_to_string('login.html')
-
-    return render(request, 'login.html')#JsonResponse({'html': rendered_page_html})
+    rendered_page_html = render_to_string('login.html')
+    return HttpResponse(rendered_page_html)
 
 
 def ask_json(request):
