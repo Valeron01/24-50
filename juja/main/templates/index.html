@@ -120,50 +120,6 @@
         </div>
     </footer>
 
-    <div class="window-wrapper">
-        <div id="loginWindow" class="window">
-            <div id="close-auth" class="window__close">
-                <img class="close" src="{% static 'img/close.png'%}" alt="">
-            </div>
-            <div class="window__inner">
-                <h3 class="window__title">Авторизация</h3>
-                <div class="window__autorize autorize">
-                    <form class="window__form form">
-                        {% csrf_token %}
-                        <input id="authLogin" class="form__input" type="text" placeholder="email">
-                        <input id="authPass" class="form__input" type="password" placeholder="пароль">
-                        <div id="authBtn" class="button form__btn">Войти</div>
-                    </form>
-                    <div class="autorize__reset">
-                        <div id="resetPass">Сбросить пароль</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="window-wrapper">
-        <div id="registerWindow" class="window">
-            <div id="close-register" class="window__close">
-                <img class="close" src="{% static 'img/close.png'%}" alt="">
-            </div>
-            <div class="window__inner">
-                <h3 class="window__title">Регистрация</h3>
-                <div class="window__autorize autorize">
-                    <form class="window__form form">
-                        {% csrf_token %}
-                        <input id="userName" class="form__input" type="text" placeholder="имя">
-                        <input id="userLogin" class="form__input" type="text" placeholder="email">
-                        <input id="userPass" class="form__input" type="password" placeholder="пароль">
-                        <input id="userPassConfirm" class="form__input" type="password" placeholder="подтвердите">
-                        <div id="registerBtn" class="button form__btn">Продолжить</div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
     <script>
         var csrf_token = '{{ csrf_token }}';
     </script>

@@ -20,7 +20,15 @@ function initEventHandlers() {
 
     //Кнопка "Вход"
     $("#login").click(() => {
-        $('#loginWindow').parent().css('display', 'flex');
+        $.ajax({
+            url: '/login',
+            method: 'get',
+            dataType: 'html',
+            success: function(data) {
+                $(document.body).apperend(data);
+            }
+        });
+        //$('#loginWindow').parent().css('display', 'flex');
     });
     //Кнопки закрытия окна авторизации
     $("#close-auth").on("click", () => {
