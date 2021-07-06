@@ -32,13 +32,13 @@ function initEventHandlers() {
                         url: '/login',
                         method: 'post',
                         data: {
-                            login: $('authLogin').text(),
-                            password: $('authPass').text(),
+                            login: $('#authLogin').val(),
+                            password: $('#authPass').val(),
                             csrfmiddlewaretoken: csrf_token
                         },
                         dataType: 'html',
                         success: function(data) {
-                           alert("Хуяк! Вертушка!");
+                           alert("Хуяк! Вертушка!" + data);
                         }
                     });
                 });
