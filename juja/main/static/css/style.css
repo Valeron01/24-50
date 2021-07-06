@@ -44,6 +44,7 @@ body {
   background-color: #ecc245;
   padding: 10px 15px;
   border-radius: 15px 1px;
+  display: inline-block;
 }
 
 .button:hover {
@@ -122,7 +123,8 @@ body {
 }
 
 .header .panel .menu .list #login,
-.header .panel .menu .list #register {
+.header .panel .menu .list #register,
+.header .panel .menu .list #personalAccount {
   background-color: #ecc245;
   padding: 10px 15px;
   margin: 0 5px;
@@ -130,17 +132,21 @@ body {
 }
 
 .header .panel .menu .list #login:hover,
-.header .panel .menu .list #register:hover {
+.header .panel .menu .list #register:hover,
+.header .panel .menu .list #personalAccount:hover {
   background-color: #a8810c;
+  cursor: pointer;
 }
 
 .header .panel .menu .list #login:hover a,
-.header .panel .menu .list #register:hover a {
+.header .panel .menu .list #register:hover a,
+.header .panel .menu .list #personalAccount:hover a {
   color: #fff;
 }
 
 .header .panel .menu .list #login:hover :after,
-.header .panel .menu .list #register:hover :after {
+.header .panel .menu .list #register:hover :after,
+.header .panel .menu .list #personalAccount:hover :after {
   background: #fff;
 }
 
@@ -261,6 +267,7 @@ body {
   background-color: #DCDCDC;
   border-radius: 5px;
   max-width: 175px;
+  max-height: 350px;
 }
 
 .main .place .place__category {
@@ -345,6 +352,91 @@ body {
   margin: 0;
   font-size: 10px;
   text-align: center;
+}
+
+.window-wrapper {
+  position: fixed;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+}
+
+.window-wrapper .window {
+  background-color: #DCDCDC;
+  padding: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border: 2px solid #ecc245;
+  border-radius: 5px;
+}
+
+.window-wrapper .window .window__inner .window__title {
+  padding: 10px 0;
+}
+
+.window-wrapper .window .window__inner .autorize .window__form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.window-wrapper .window .window__inner .autorize .autorize__reset {
+  cursor: pointer;
+}
+
+.window-wrapper .window .window__inner .autorize .autorize__reset #resetPass {
+  cursor: pointer;
+}
+
+.window-wrapper .window .window__inner .autorize .autorize__reset #resetPass:hover {
+  color: #5c4606;
+  text-decoration: underline;
+}
+
+.window-wrapper .window .window__close {
+  display: inline-block;
+  position: relative;
+  left: 95%;
+  cursor: pointer;
+}
+
+.window-wrapper .window .window__close .close {
+  width: 20px;
+  height: 20px;
+}
+
+.form {
+  padding: 20px 0;
+}
+
+.form .form__input {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: none;
+  margin: 5px 0;
 }
 
 @media (max-width: 1200px) {
