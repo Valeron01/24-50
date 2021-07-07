@@ -6,5 +6,6 @@ urlpatterns = [
     path('index', views.index),
     path('get_json', views.ask_json),
     path('login', views.login_page),
-    path('register', views.register_page)
+    path('register', views.register_page),
+    path('user', views.user_page)
 ]
