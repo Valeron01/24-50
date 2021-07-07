@@ -1,17 +1,30 @@
 'use strict';
 
-window.onload = () => {
-    var userId;
-    var userIsLogin = false;
-
-    if (userIsLogin) {
-        $("#login").css('display', 'none');
-        $("#register").css('display', 'none');
-    } else {
-        $("#basket").css('display', 'none');
-        $("#personalAccount").css('display', 'none');
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
     }
+    return cookieValue;
+}
 
+
+var userId = 1;
+var userIsLogin = false;
+
+
+window.onload = () => {
+    
+    
+    checkAuth();
     initEventHandlers();
     
 }   
@@ -34,11 +47,15 @@ function initEventHandlers() {
                         data: {
                             login: $('#authLogin').val(),
                             password: $('#authPass').val(),
-                            csrfmiddlewaretoken: csrf_token
+                            csrfmiddlewaretoken: getCookie('csrftoken')
                         },
                         dataType: 'html',
                         success: function(data) {
-                           alert("Хуяк! Вертушка!" + data);
+                           if (data.is_logged) {
+                                //TODO
+                           } else {
+                                $('#message').text("Неверный логин или пароль").css('display', 'block');
+                           }
                         }
                     });
                 });
@@ -63,17 +80,70 @@ function initEventHandlers() {
 
     //Кнопка "регистрация"
     $('#register').on('click', () => {
-        $('#registerWindow').parent().css('display', 'flex');
+        $.ajax({
+            url: '/register',
+            method: 'get',
+            dataType: 'html',
+            success: function(data) {
+                $(document.body).append(data);
+
+                 //Кнопка закрытия окна регистрации
+                $("#close-register").on("click", () => {
+                    $('#close-register').parent().parent().remove();
+                });
+
+                //Кнопка "Продолжить"
+                $("#registerBtn").on('click', () => {
+                    if ($('#userPass').val() != $('#userPassConfirm').val()) {
+                        $('#message').text("пароли не совпадают").css('display', 'block');
+                        return;
+                    }
+                    $.ajax({
+                        url: '/register',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {
+                            login: $('#userName').val(),
+                            email: $('#userLogin').val(),
+                            password: $('#userPass').val(),
+                            csrfmiddlewaretoken: getCookie('csrftoken')
+                        },
+                        success: function(data) {
+                            if (data.is_reg) {
+                                $.ajax({
+                                    url: '/user',
+                                    method: 'get',
+                                    dataType: 'html',
+                                    data: {
+                                        user_id: userId,
+                                    },
+                                    success: function(data) {
+                                        userIsLogin = true;
+                                        checkAuth();
+                                    }
+                                });
+                                console.log(data.user);
+                            } else {
+                                $('#message').text(data.message).css('display', 'block');
+                            }
+                        }
+                    });
+                });
+            }
+        });
     });
-    //Кнопка закрытия окна регистрации
-    $("#close-register").on("click", () => {
-        $('#close-register').parent().parent().css('display', 'none');
-    });
-    //Кнопка "Продолжить"
-    $("#registerBtn").on('click', () => {
-        //TODO
-    });
+   
     ///////////////////////////////////////////////
+}
+
+function checkAuth() {
+    if (userIsLogin) {
+        $("#login").css('display', 'none');
+        $("#register").css('display', 'none');
+    } else {
+        $("#basket").css('display', 'none');
+        $("#personalAccount").css('display', 'none');
+    }
 }
 
 
