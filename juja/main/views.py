@@ -7,7 +7,8 @@ from django.template.loader import render_to_string
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.db import IntegrityError
-
+from django.contrib.auth.decorators import login_required
+import base64
 
 def index(request):
     print(request.user)
@@ -53,6 +54,13 @@ def login_page(request:HttpRequest):
             return  JsonResponse({'is_logged' : True}) # отправляем результат с удачей
 
         return JsonResponse({'is_logged' : False}) # с провалом
+
+
+
+def user_page(request:HttpRequest()):
+    if request.user.is_authenticated:
+        return render(request, 'user.html')
+    return HttpResponse(status=403)
 
 
 def ask_json(request):

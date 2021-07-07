@@ -22,11 +22,8 @@ var userIsLogin = false;
 
 
 window.onload = () => {
-    
-    
     checkAuth();
     initEventHandlers();
-    
 }   
 function initEventHandlers() {
     //Окно авторизации
