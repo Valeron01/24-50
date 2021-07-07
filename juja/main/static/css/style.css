@@ -438,6 +438,14 @@ body {
   margin: 5px 0;
 }
 
+.message {
+  background-color: tomato;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: none;
+  font-size: 12px;
+}
+
 @media (max-width: 1200px) {
   .main .place .showcase .showcase__product .showcase__product {
     width: 25%;
