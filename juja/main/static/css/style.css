@@ -113,6 +113,7 @@ body {
 
 .header .panel .menu .list .list__item:hover {
   padding-top: 5px;
+  cursor: pointer;
 }
 
 .header .panel .menu .list .list__item:hover :after {

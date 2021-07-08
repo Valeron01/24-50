@@ -115,10 +115,9 @@ function initEventHandlers() {
                                     method: 'get',
                                     dataType: 'html',
                                     success: function(data) {
-                                        goToUserPage(data)
+                                        goToUserPage(data);
                                     }
                                 });
-                                console.log(data.user);
                             } else {
                                 $('#message').text(data.message).css('display', 'block');
                             }
@@ -182,11 +181,16 @@ function initEventHandlers() {
             }
         });
     });
+
+    // Кпонка "Главная"
+    $('#mainPage').on('click', () => {
+        getMainPage();
+    });
 }
 
 function goToUserPage(data) {
     $('.window__close').trigger('click');
-    $('#main_page').html(data);
+    $('.main').html(data);
     setCookie('logged', true);
     userIsLogin = getCookie('logged');
     checkAuth(userIsLogin);
@@ -219,6 +223,18 @@ function checkAuth(value) {
      return data; 
 
  }
+
+function getMainPage() {
+    window.location.href = "/";
+    $.ajax({
+        url: '/',
+        method: 'get',
+        dataType: 'html',
+        success: function(data) {
+            $('.main').html(data);
+        }
+    });
+}
 
 function getCookie(name) {
     let cookieValue = null;

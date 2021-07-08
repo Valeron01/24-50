@@ -103,6 +103,7 @@ body {
 }
 
 .header .panel .menu .list .list__item {
+  
   padding: 0 7px;
 }
 
@@ -113,6 +114,7 @@ body {
 
 .header .panel .menu .list .list__item:hover {
   padding-top: 5px;
+  cursor: pointer;
 }
 
 .header .panel .menu .list .list__item:hover :after {

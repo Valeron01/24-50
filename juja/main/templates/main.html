@@ -1,0 +1,31 @@
+{% load static %}
+<div class="main__inner place">
+    <div class="place__category category">
+        <div class="">Категории товаров</div>
+        <ul id="category__list" class="category__list list">
+            <li id="btn1" class="list__item">Нелюди</li>
+            <li id="btn2" class="list__item">Категория</li>
+            <li id="btn3" class="list__item">Категория</li>
+            <li id="btn4" class="list__item">Категория</li>
+            <li id="btn5" class="list__item">Категория</li>
+        </ul>
+    </div>
+    <div id="showcase" class="place__showcase showcase">
+        <div class="showcase__product product">
+            <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
+            <h3 class="product__name">Львумба (Липецкий)</h3>
+            <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+            <p class="product__descipt">Огородный десантник</p>
+            <div class="product__cost cost">12213</div>
+            <div class="button buy__btn">В корзину</div>
+        </div>
+        <div class="showcase__product product">
+            <img class="product__img" src="{% static '/img/noimage.png' %}" alt="">
+            <h3 class="product__name">Львумба (Липецкий)</h3>
+            <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
+            <p class="product__descipt">Огородный десантник</p>
+            <div class="product__cost cost">12213</div>
+            <div class="button buy__btn">В корзину</div>
+        </div>
+    </div>
+</div>
