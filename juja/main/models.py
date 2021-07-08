@@ -38,3 +38,6 @@ class UserDetail(models.Model):
 class OffersData(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
     message = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return f'{self.user.username} -> {self.message[:100]}...'

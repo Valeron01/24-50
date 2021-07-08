@@ -104,21 +104,28 @@ def user_page(request:HttpRequest):
 
 def exit(request):
     if not request.user.is_authenticated:
-        return HttpResponse()
+        return HttpResponse(status=403)
 
     if request.method == 'POST':
         logout(request)
         return HttpResponse(status=200)
 
 def offer(request:HttpRequest):
+    if not request.user.is_authenticated:
+        return HttpResponse(status=403)
+    
     if request.method == "GET":
         return render(request, 'offer.html')
     if request.method == "POST":
         offer_data = OffersData(user=request.user, message=request.POST['message'])
+
         user = request.user
         user.first_name = request.POST['firstName']
         user.last_name = request.POST['lastName']
+
+
         user.save()
+        offer_data.save()
         return HttpResponse(status=200)
 
 def ask_json(request):
@@ -152,5 +159,4 @@ def get_categories(request):
         categories = [i['name'] for i in categories]
     
         return JsonResponse({'categories': categories})
-    return HttpResponse(status=200)
-
+    return HttpResponse(status=500)
