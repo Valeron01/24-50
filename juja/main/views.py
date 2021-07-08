@@ -34,12 +34,16 @@ def register_page(request):
             return HttpResponse(status=400)
         try:
             user = User.objects.create_user(data['login'], data['email'], data['password']) # пробуем зарегать
+            user_detail = UserDetail(user=user) # Создаём детальную инфу о пользователе
+
+            user.save()
+            user_detail.save()
+
             login(request, user) # логинимся
         except IntegrityError:
             return JsonResponse({'is_reg': False, 'message': 'такой аккаунт уже есть'}) # Посылаем на
         
         return JsonResponse({'is_reg': True, 'user': str(user.email)}) # регистрация успешна
-    
 
 def login_page(request:HttpRequest):
     if request.user.is_authenticated:
@@ -66,18 +70,20 @@ def user_page(request:HttpRequest):
             return HttpResponse(status=403)
 
         products_ids = Cart.objects.filter(user__id=request.user.id).values('product')
+        nums = Cart.objects.filter(user__id=request.user.id).values('num')
 
         products = Product.objects.filter(id__in=products_ids)
 
         products_info = []
-        for i in products:
+        for i, n in zip(products, num):
             p = {
                 'productName':i.name,
                 'cost':i.price,
                 'seller':i.seller.username,
                 'description':i.description,
                 'category': i.category.name,
-                'image': i.image_name
+                'image': i.image_name,
+                'num': n
             }
             products_info.append(p)
 
@@ -132,3 +138,4 @@ def get_products(request):
             }
             for i in products]
     return JsonResponse({'products': data})
+
