@@ -428,6 +428,32 @@ body {
   height: 20px;
 }
 
+.user__page {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+}
+
+.user__page .place__user {
+  max-width: 250px;
+}
+
+.user__page .place__user > *:not(:last-child) {
+  padding: 10px 0;
+}
+
+.user__page .place__user .user__balance #balance::after {
+  content: '₽';
+  padding-left: 5px;
+}
+
+.user__page .place__basket {
+  width: 100%;
+}
+
 .form {
   padding: 20px 0;
 }

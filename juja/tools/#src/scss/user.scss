@@ -1,0 +1,19 @@
+.user__page {
+    display: flex;
+    justify-content: flex-start;
+    .place__user {
+        max-width: 250px;
+        & > *:not(:last-child) {
+           padding: 10px 0; 
+        }
+        .user__balance {
+            #balance::after {
+                content: '₽';
+                padding-left: 5px;
+            }
+        }
+    }
+    .place__basket {
+        width: 100%;
+    }
+}

@@ -23,8 +23,6 @@ window.onload = () => {
     
 }   
 function initEventHandlers() {
-    //Окно авторизации
-
     //Кнопка "Вход"
     $("#login").on('click', () => {
         $.ajax({
@@ -46,6 +44,7 @@ function initEventHandlers() {
                         
                         success: function(data) {
                             if (data.is_logged) {
+                                $('.window__close').trigger('click');
                                 getUserPage(data);
                             } else {
                                 $('.message').text("Неверный логин или пароль").css('display', 'block');
@@ -66,11 +65,8 @@ function initEventHandlers() {
             }
         });
     });
-    //////////////////////////////////////////////
-
-    //Окно регистрации
-
-    //Кнопка "регистрация"
+    
+    //Кнопка "Регистрация"
     $('#register').on('click', () => {
         $.ajax({
             url: '/register',
@@ -104,6 +100,7 @@ function initEventHandlers() {
                             if (data.is_reg) {
                                 setCookie('logged', data.is_logged);
                                 userIsLogin = getCookie('logged');
+                                $('.window__close').trigger('click');
                                 getUserPage();
                             } else {
                                 $('#message').text(data.message).css('display', 'block');
@@ -115,7 +112,6 @@ function initEventHandlers() {
         });
     });
    
-    ///////////////////////////////////////////////
     // Кнопка выхода из аккаунта
     $('#exit').on('click', () => {
         $.ajax({
@@ -134,7 +130,6 @@ function initEventHandlers() {
     });
 
     // Кнопка "Стать продавцом"
-    
     $('#offer').on('click', () => {
         $.ajax({
             url: '/offer',
@@ -178,55 +173,14 @@ function initEventHandlers() {
     $('#basket').on('click', () => {
         getUserPage();
     });
+
     // Кнопка "Личный кабинет"
     $('#personalAccount').on('click', () => {
         getUserPage();
     });
 }
 
-function getUserPage() {
-    $('.window__close').trigger('click');
-    $.ajax({
-        url: '/user',
-        method: 'get',
-        dataType: 'html',
-        success: function(data) {
-            $('.main').html(data);
-            setCookie('logged', true);
-            userIsLogin = getCookie('logged');
-            checkAuth(userIsLogin);
-        }
-    });
-}
-
-function checkAuth(value) {
-    value = (value == 'true') ? true : false;
-    if (value) {
-        $(".unlogin").css('display', 'none');
-        $(".login").css('display', 'block');
-    } else {
-        $(".unlogin").css('display', 'block');
-        $(".login").css('display', 'none');
-    }
-}
-
- function getUserData() {
-     var data;
-     $.ajax({
-        url: '/user',
-        method: 'post',
-        dataType: 'json',
-        data: {
-            csrfmiddlewaretoken: getCookie('csrftoken')
-        },
-        success: function(data) {
-            data = this.data;
-        }
-     });
-     return data; 
-
- }
-
+// Загрузка контента главной страницы
 function getMainPage() {
     $.ajax({
         url: '',
@@ -241,6 +195,52 @@ function getMainPage() {
     });
 }
 
+// Загрузка контента страницы пользователя
+function getUserPage() {
+    $.ajax({
+        url: '/user',
+        method: 'get',
+        dataType: 'html',
+        success: function(data) {
+            $('.main').html(data);
+            setCookie('logged', true);
+            userIsLogin = getCookie('logged');
+            checkAuth(userIsLogin);
+        }
+    });
+}
+
+// Проверка на авторизацию
+function checkAuth(value) {
+    value = (value == 'true') ? true : false;
+    if (value) {
+        $(".unlogin").css('display', 'none');
+        $(".login").css('display', 'block');
+    } else {
+        $(".unlogin").css('display', 'block');
+        $(".login").css('display', 'none');
+    }
+}
+// Получение данных о пользователе:
+ function getUserData() {
+     var data;
+     $.ajax({
+        url: '/user',
+        method: 'post',
+        dataType: 'json',
+        data: {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        },
+        success: function(data) {
+            data = this.data;
+        }
+     });
+     return data; 
+ }
+
+ 
+
+// Вспомогательные функции для работы с Cookies
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
