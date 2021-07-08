@@ -21,13 +21,14 @@ class Product(models.Model):
 class Cart(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
     product = models.ForeignKey(Product, models.CASCADE)
+    num = models.IntegerField(default=1)
 
     def __str__(self):
-        return f'{self.user.username} -> {self.product}'
+        return f'{self.user.username} -> {self.product}x{self.num}'
 
 class UserDetail(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
-    balance = models.FloatField()
+    balance = models.FloatField(default=0)
     is_seller = models.BooleanField(default=False)
 
     def __str__(self):

@@ -34,12 +34,16 @@ def register_page(request):
             return HttpResponse(status=400)
         try:
             user = User.objects.create_user(data['login'], data['email'], data['password']) # пробуем зарегать
+            user_detail = UserDetail(user=user) # Создаём детальную инфу о пользователе
+
+            user.save()
+            user_detail.save()
+
             login(request, user) # логинимся
         except IntegrityError:
             return JsonResponse({'is_reg': False, 'message': 'такой аккаунт уже есть'}) # Посылаем на
         
         return JsonResponse({'is_reg': True, 'user': str(user.email)}) # регистрация успешна
-    
 
 def login_page(request:HttpRequest):
     if request.user.is_authenticated:
