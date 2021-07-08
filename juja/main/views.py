@@ -58,7 +58,7 @@ def user_page(request):
 
 def exit(request):
     if request.method == 'POST':
-        # TODO деавторизация
+        logout(request)
         return HttpResponse(status=200)
 
 def ask_json(request):
