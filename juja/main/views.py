@@ -66,6 +66,7 @@ def user_page(request):
         #   Баланс
         #   Cписок товаров в корзине {{productName: 'name', cost: '0', seller: 'sellerName'}}
         # data = {'username': }
+        # ну я типо блять тут хуё-моё что-то написал
         return HttpResponse(status=200)
 
 def exit(request):
