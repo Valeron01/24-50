@@ -13,6 +13,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, models.CASCADE)
     price = models.FloatField()
     seller = models.ForeignKey(User, models.CASCADE)
+    image_name = models.CharField(max_length=50, default='noimage.png')
 
     def __str__(self):
         return self.name

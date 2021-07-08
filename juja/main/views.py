@@ -74,7 +74,10 @@ def user_page(request:HttpRequest):
             p = {
                 'productName':i.name,
                 'cost':i.price,
-                'seller':i.seller.username
+                'seller':i.seller.username,
+                'description':i.description,
+                'category': i.category.name,
+                'image': i.image_name
             }
             products_info.append(p)
 
@@ -103,8 +106,6 @@ def offer(request):
         return render(request, 'offer.html')
     if request.method == "POST":
         
-        
-
         return HttpResponse(status=200)
 
 def ask_json(request):
@@ -115,3 +116,19 @@ def ask_json(request):
     }
 
     return JsonResponse(dict)
+
+def get_products(request):
+
+    products = Product.objects.all()
+    print(products)
+
+    data = [{
+            'productName': i.name,
+            'cost': i.price,
+            'seller': i.seller.username,
+            'description': i.description,
+            'category': i.category.name,
+            'image': i.image_name,
+            }
+            for i in products]
+    return JsonResponse({'products': data})
