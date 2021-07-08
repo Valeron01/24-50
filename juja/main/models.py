@@ -27,6 +27,7 @@ class Cart(models.Model):
 class UserDetail(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
     balance = models.FloatField()
+    is_seller = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.user.username}, balance: {self.balance}'

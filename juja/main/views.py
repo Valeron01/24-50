@@ -102,7 +102,9 @@ def offer(request):
     if request.method == "GET":
         return render(request, 'offer.html')
     if request.method == "POST":
-        # TODO  
+        
+        
+
         return HttpResponse(status=200)
 
 def ask_json(request):
