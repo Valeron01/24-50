@@ -145,3 +145,11 @@ def get_products(request):
             }
             for i in products]
     return JsonResponse({'products': data})
+
+def get_categories(request):
+    if request.method == 'GET':
+        categories = Category.objects.all().values('name')
+        categories = [i['name'] for i in categories]
+    
+        return JsonResponse({'categories': categories})
+
