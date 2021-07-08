@@ -446,12 +446,12 @@ body {
   font-size: 12px;
 }
 
-#exit {
-  cursor: pointer;
-}
-
 @media (max-width: 1200px) {
   .main .place .showcase .showcase__product .showcase__product {
     width: 25%;
   }
+}
+
+#exit {
+  cursor: pointer;
 }

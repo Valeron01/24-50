@@ -7,8 +7,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.db import IntegrityError
-from django.contrib.auth.decorators import login_required
-import base64
+
 
 def index(request):
     print(request.user)
@@ -36,9 +35,6 @@ def register_page(request):
         return JsonResponse({'is_reg': True, 'user': str(user.email)}) # регистрация успешна
     
 
-
-
-
 def login_page(request:HttpRequest):
     if request.user.is_authenticated:
         return HttpResponse('already logged in', status=405)# Если залогинены, отправляем 405
@@ -55,13 +51,15 @@ def login_page(request:HttpRequest):
 
         return JsonResponse({'is_logged' : False}) # с провалом
 
-
-
-def user_page(request:HttpRequest()):
-    if request.user.is_authenticated:
+def user_page(request):
+    if request.method == 'GET':
         return render(request, 'user.html')
-    return HttpResponse(status=403)
+    return
 
+def exit(request):
+    if request.method == 'POST':
+        # TODO деавторизация
+        return HttpResponse(status=200)
 
 def ask_json(request):
     dict = {
