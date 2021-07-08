@@ -206,6 +206,8 @@ function getUserPage() {
             setCookie('logged', true);
             userIsLogin = getCookie('logged');
             checkAuth(userIsLogin);
+            var info = getUserData();
+            console.log(info);
         }
     });
 }
@@ -233,7 +235,8 @@ function checkAuth(value) {
         },
         success: function(data) {
             data = this.data;
-        }
+        },
+        async: false
      });
      return data; 
  }
