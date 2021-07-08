@@ -13,6 +13,7 @@ def index(request):
     print(request.user)
     if request.method == "GET":
         return render(request, 'index.html')
+        # Хуяк вертушка!
     if request.method == "POST":
         return render(request, 'main.html')
 
