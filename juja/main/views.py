@@ -13,6 +13,8 @@ def index(request):
     print(request.user)
     if request.method == "GET":
         return render(request, 'index.html')
+    if request.method == "POST":
+        return render(request, 'main.html')
 
 def check_auth(request):
     return JsonResponse({'logged': request.user.is_authenticated})

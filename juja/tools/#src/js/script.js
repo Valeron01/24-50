@@ -18,6 +18,7 @@ window.onload = () => {
     });
     
     checkAuth(userIsLogin);
+    getMainPage()
     initEventHandlers();
     
 }   
@@ -45,14 +46,7 @@ function initEventHandlers() {
                         
                         success: function(data) {
                             if (data.is_logged) {
-                               $.ajax({
-                                url: '/user',
-                                method: 'get',
-                                dataType: 'html',
-                                success: function(data) {
-                                    goToUserPage(data);
-                                }
-                               });
+                                getUserPage(data);
                             } else {
                                 $('.message').text("Неверный логин или пароль").css('display', 'block');
                             }
@@ -109,15 +103,8 @@ function initEventHandlers() {
                         success: function(data) {
                             if (data.is_reg) {
                                 setCookie('logged', data.is_logged);
-                                userIsLogin = Boolean(getCookie('logged'));
-                                $.ajax({
-                                    url: '/user',
-                                    method: 'get',
-                                    dataType: 'html',
-                                    success: function(data) {
-                                        goToUserPage(data);
-                                    }
-                                });
+                                userIsLogin = getCookie('logged');
+                                getUserPage();
                             } else {
                                 $('#message').text(data.message).css('display', 'block');
                             }
@@ -186,15 +173,26 @@ function initEventHandlers() {
     $('#mainPage').on('click', () => {
         getMainPage();
     });
+
+    //Кнопка "Корзина"
+    $('#basket').on('click', () => {
+        getUserPage({});
+    });
 }
 
-function goToUserPage(data) {
+function getUserPage() {
     $('.window__close').trigger('click');
-    $('.main').html(data);
-    setCookie('logged', true);
-    userIsLogin = getCookie('logged');
-    checkAuth(userIsLogin);
-
+    $.ajax({
+        url: '/user',
+        method: 'get',
+        dataType: 'html',
+        success: function(data) {
+            $('.main').html(data);
+            setCookie('logged', true);
+            userIsLogin = getCookie('logged');
+            checkAuth(userIsLogin);
+        }
+    });
 }
 
 function checkAuth(value) {
@@ -207,6 +205,7 @@ function checkAuth(value) {
         $(".login").css('display', 'none');
     }
 }
+
  function getUserData() {
      var data;
      $.ajax({
@@ -225,13 +224,15 @@ function checkAuth(value) {
  }
 
 function getMainPage() {
-    window.location.href = "/";
     $.ajax({
-        url: '/',
-        method: 'get',
+        url: '',
+        method: 'post',
         dataType: 'html',
+        data: {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        },
         success: function(data) {
-            $('.main').html(data);
+            $('#main_page').html(data);
         }
     });
 }
