@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.db import IntegrityError
-
+from .models import *
 
 def index(request):
     print(request.user)
@@ -57,18 +57,41 @@ def login_page(request:HttpRequest):
 
         return JsonResponse({'is_logged' : False}) # с провалом
 
-def user_page(request):
+def user_page(request:HttpRequest):
     if request.method == 'GET':
         return render(request, 'user.html')
     
     if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return HttpResponse(status=403)
+
+        products_ids = Cart.objects.filter(user__id=request.user.id).values('product')
+
+        products = Product.objects.filter(id__in=products_ids)
+
+        products_info = []
+        for i in products:
+            p = {
+                'productName':i.name,
+                'cost':i.price,
+                'seller':i.seller.username
+            }
+            products_info.append(p)
+
+        
+        data = {
+            'username': request.user.username,
+            'balance': UserDetail.objects.get(user=request.user).balance,
+            'products': products_info
+        }
+
         # передаем данные о пользователе
         #   Имя
         #   Баланс
         #   Cписок товаров в корзине {{productName: 'name', cost: '0', seller: 'sellerName'}}
         # data = {'username': }
         # ну я типо блять тут хуё-моё что-то написал
-        return HttpResponse(status=200)
+        return JsonResponse(data)
 
 def exit(request):
     if request.method == 'POST':

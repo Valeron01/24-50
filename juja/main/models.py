@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 class Category(models.Model):
     name = models.CharField(max_length=200)
 
+    def __str__(self):
+        return f'{self.name}'
+
 class Product(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000)
@@ -11,10 +14,19 @@ class Product(models.Model):
     price = models.FloatField()
     seller = models.ForeignKey(User, models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 class Cart(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
     product = models.ForeignKey(Product, models.CASCADE)
 
+    def __str__(self):
+        return f'{self.user.username} -> {self.product}'
+
 class UserDetail(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
     balance = models.FloatField()
+
+    def __str__(self):
+        return f'{self.user.username}, balance: {self.balance}'
