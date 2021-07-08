@@ -75,7 +75,7 @@ def user_page(request:HttpRequest):
         products = Product.objects.filter(id__in=products_ids)
 
         products_info = []
-        for i, n in zip(products, num):
+        for i, n in zip(products, nums):
             p = {
                 'productName':i.name,
                 'cost':i.price,
@@ -112,6 +112,10 @@ def offer(request):
         return render(request, 'offer.html')
     if request.method == "POST":
         
+        offer_data = OffersData(user=request.user, message=request.POST['message'])
+
+
+
         return HttpResponse(status=200)
 
 def ask_json(request):
@@ -138,4 +142,3 @@ def get_products(request):
             }
             for i in products]
     return JsonResponse({'products': data})
-

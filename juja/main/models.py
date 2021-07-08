@@ -33,3 +33,8 @@ class UserDetail(models.Model):
 
     def __str__(self):
         return f'{self.user.username}, balance: {self.balance}'
+
+
+class OffersData(models.Model):
+    user = models.ForeignKey(User, models.CASCADE)
+    message = models.CharField(max_length=1000)
