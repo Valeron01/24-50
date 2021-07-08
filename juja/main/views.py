@@ -147,9 +147,10 @@ def get_products(request):
     return JsonResponse({'products': data})
 
 def get_categories(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         categories = Category.objects.all().values('name')
         categories = [i['name'] for i in categories]
     
         return JsonResponse({'categories': categories})
+    return HttpResponse(status=200)
 

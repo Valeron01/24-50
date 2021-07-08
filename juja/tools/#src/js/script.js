@@ -191,6 +191,7 @@ function getMainPage() {
         },
         success: function(data) {
             $('#main_page').html(data);
+            getCategories('#category__list');
         }
     });
 }
@@ -259,10 +260,11 @@ function getCategories(selectorId) {
             csrfmiddlewaretoken: getCookie('csrftoken') 
         },
         success: function(data) {
-            for (var i = 0; i < data.length; i++) {
-                $(selectorId).append('<li class="list__item">'+data[i]+'</li>');
+            for (var i = 0; i < data.categories.length; i++) {
+                $(selectorId).append('<li class="list__item">'+data.categories[i]+'</li>');
             }
-        }
+        },
+        async: false
     });
 }
 
