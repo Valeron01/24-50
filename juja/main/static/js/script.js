@@ -176,7 +176,11 @@ function initEventHandlers() {
 
     //Кнопка "Корзина"
     $('#basket').on('click', () => {
-        getUserPage({});
+        getUserPage();
+    });
+    // Кнопка "Личный кабинет"
+    $('#personalAccount').on('click', () => {
+        getUserPage();
     });
 }
 
