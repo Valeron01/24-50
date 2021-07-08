@@ -454,6 +454,10 @@ body {
   width: 100%;
 }
 
+.user__page .place__basket .basket__title {
+  padding: 10px 30px;
+}
+
 .form {
   padding: 20px 0;
 }

@@ -15,5 +15,8 @@
     }
     .place__basket {
         width: 100%;
+        .basket__title {
+            padding: 10px 30px;
+        }
     }
 }

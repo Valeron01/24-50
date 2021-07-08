@@ -207,7 +207,10 @@ function getUserPage() {
             userIsLogin = getCookie('logged');
             checkAuth(userIsLogin);
             var info = getUserData();
-            console.log(info);
+            $('#username').text(info.username);
+            $('#balance').text(info.balance);
+            addProducts('#basket', info.products);
+
         }
     });
 }
@@ -225,7 +228,7 @@ function checkAuth(value) {
 }
 // Получение данных о пользователе:
  function getUserData() {
-     var data;
+     var info;
      $.ajax({
         url: '/user',
         method: 'post',
@@ -234,14 +237,19 @@ function checkAuth(value) {
             csrfmiddlewaretoken: getCookie('csrftoken')
         },
         success: function(data) {
-            data = this.data;
+            info = data;
         },
         async: false
      });
-     return data; 
+     return info; 
  }
 
- 
+ function addProducts(selectorId, products) {
+     console.log(products)
+    for (var pr in products) {
+        $(selectorId).append($.html('\n<div class="showcase__product product">\n<img class="product__img" src="{% static `/img/products/'+pr.img+'` %}" alt="">\n<h3 class="product__name">'+pr.productName+'</h3>\n<p class="product__category"><span>категория:</span> <span class="category__name">'+ pr.category+'</span></p>\n<p class="product__descipt">'+pr.description+'</p>\n<div class="product__cost cost">'+pr.cost+'</div>\n<div class="button buy__btn">В корзину</div>\n</div>'));
+    }
+ }
 
 // Вспомогательные функции для работы с Cookies
 function getCookie(name) {
