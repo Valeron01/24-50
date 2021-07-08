@@ -250,6 +250,22 @@ function checkAuth(value) {
     }
  }
 
+function getCategories(selectorId) {
+    $.ajax({
+        url: '/categories',
+        method: 'post',
+        dataType: 'json',
+        data: {
+            csrfmiddlewaretoken: getCookie('csrftoken') 
+        },
+        success: function(data) {
+            for (var i = 0; i < data.length; i++) {
+                $(selectorId).append('<li class="list__item">'+data[i]+'</li>');
+            }
+        }
+    });
+}
+
 // Вспомогательные функции для работы с Cookies
 function getCookie(name) {
     let cookieValue = null;
