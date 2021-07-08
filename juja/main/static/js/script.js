@@ -209,8 +209,7 @@ function getUserPage() {
             var info = getUserData();
             $('#username').text(info.username);
             $('#balance').text(info.balance);
-            addProducts('#basket', info.products);
-
+            addProducts('#cart', info.products);
         }
     });
 }
@@ -245,9 +244,9 @@ function checkAuth(value) {
  }
 
  function addProducts(selectorId, products) {
-     console.log(products)
-    for (var pr in products) {
-        $(selectorId).append($.html('\n<div class="showcase__product product">\n<img class="product__img" src="{% static `/img/products/'+pr.img+'` %}" alt="">\n<h3 class="product__name">'+pr.productName+'</h3>\n<p class="product__category"><span>категория:</span> <span class="category__name">'+ pr.category+'</span></p>\n<p class="product__descipt">'+pr.description+'</p>\n<div class="product__cost cost">'+pr.cost+'</div>\n<div class="button buy__btn">В корзину</div>\n</div>'));
+     console.log(products);
+    for (var i = 0; i < products.length; i++) {
+        $(selectorId).append('<div class="showcase__product product"><img class="product__img" src="/static/img/products/'+products[i].image+'" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span>категория:</span> <span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><div class="product__cost cost">'+products[i].cost+'</div><div class="button buy__btn">В корзину</div></div>');
     }
  }
 
