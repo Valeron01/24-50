@@ -83,7 +83,7 @@ def user_page(request:HttpRequest):
                 'description':i.description,
                 'category': i.category.name,
                 'image': i.image_name,
-                'num': n
+                'num': n['num']
             }
             products_info.append(p)
 
@@ -103,6 +103,9 @@ def user_page(request:HttpRequest):
         return JsonResponse(data)
 
 def exit(request):
+    if not request.user.is_authenticated:
+        return HttpResponse()
+
     if request.method == 'POST':
         logout(request)
         return HttpResponse(status=200)
