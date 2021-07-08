@@ -70,18 +70,20 @@ def user_page(request:HttpRequest):
             return HttpResponse(status=403)
 
         products_ids = Cart.objects.filter(user__id=request.user.id).values('product')
+        nums = Cart.objects.filter(user__id=request.user.id).values('num')
 
         products = Product.objects.filter(id__in=products_ids)
 
         products_info = []
-        for i in products:
+        for i, n in zip(products, num):
             p = {
                 'productName':i.name,
                 'cost':i.price,
                 'seller':i.seller.username,
                 'description':i.description,
                 'category': i.category.name,
-                'image': i.image_name
+                'image': i.image_name,
+                'num': n
             }
             products_info.append(p)
 
@@ -136,3 +138,4 @@ def get_products(request):
             }
             for i in products]
     return JsonResponse({'products': data})
+
