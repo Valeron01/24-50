@@ -50,11 +50,7 @@ function initEventHandlers() {
                                 method: 'get',
                                 dataType: 'html',
                                 success: function(data) {
-                                    $('.window__close').trigger('click');
-                                    $('#main_page').html(data);
-                                    setCookie('logged', true);
-                                    userIsLogin = getCookie('logged');
-                                    checkAuth(userIsLogin);
+                                    goToUserPage(data);
                                 }
                                });
                             } else {
@@ -76,8 +72,6 @@ function initEventHandlers() {
             }
         });
     });
-
-    
     //////////////////////////////////////////////
 
     //Окно регистрации
@@ -121,17 +115,7 @@ function initEventHandlers() {
                                     method: 'get',
                                     dataType: 'html',
                                     success: function(data) {
-                                        $.ajax({
-                                            url: '/user',
-                                            method: 'get',
-                                            dataType: 'html',
-                                            success: function(data) {
-                                                $('.window__close').trigger('click');
-                                                $('.main').html(data);
-                                                checkAuth(userIsLogin);
-                                            }
-                                        })
-                                        
+                                        goToUserPage(data)
                                     }
                                 });
                                 console.log(data.user);
@@ -162,6 +146,51 @@ function initEventHandlers() {
             }
         });
     });
+
+    // Кнопка "Стать продавцом"
+    
+    $('#offer').on('click', () => {
+        $.ajax({
+            url: '/offer',
+            method: 'get',
+            dataType: 'html',
+            success: function(data) {
+                $(document.body).append(data);
+
+                 //Кнопка закрытия окна 
+                $(".window__close").on("click", () => {
+                    $('.window__close').parent().parent().remove();
+                });
+
+                $('.form__btn').on('click', () => {
+                    $.ajax({
+                        url: '/offer',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {
+                            firstName: $('#userFirstName').val(),
+                            lastName: $('#userLastName').val(),
+                            email: $('#userEmail').val(),
+                            message: $('#userOffer').val(),
+                            csrfmiddlewaretoken: getCookie('csrftoken')
+                        },
+                        success: function(data) {
+                            $('.window__close').trigger('click');
+                        }
+                    });
+                });
+            }
+        });
+    });
+}
+
+function goToUserPage(data) {
+    $('.window__close').trigger('click');
+    $('#main_page').html(data);
+    setCookie('logged', true);
+    userIsLogin = getCookie('logged');
+    checkAuth(userIsLogin);
+
 }
 
 function checkAuth(value) {
@@ -174,7 +203,22 @@ function checkAuth(value) {
         $(".login").css('display', 'none');
     }
 }
+ function getUserData() {
+     var data;
+     $.ajax({
+        url: '/user',
+        method: 'post',
+        dataType: 'json',
+        data: {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        },
+        success: function(data) {
+            data = this.data;
+        }
+     });
+     return data; 
 
+ }
 
 function getCookie(name) {
     let cookieValue = null;
@@ -193,7 +237,6 @@ function getCookie(name) {
 }
 
 function setCookie(name, value, options = {}) {
-
     options = {
       path: '/',
       // при необходимости добавьте другие значения по умолчанию
@@ -215,4 +258,4 @@ function setCookie(name, value, options = {}) {
     }
   
     document.cookie = updatedCookie;
-  }
+}

@@ -56,11 +56,24 @@ def login_page(request:HttpRequest):
 def user_page(request):
     if request.method == 'GET':
         return render(request, 'user.html')
-    return
+    
+    if request.method == 'POST':
+        # передаем данные о пользователе
+        #   Имя
+        #   Баланс
+        #   Cписок товаров в корзине {{productName: 'name', cost: '0', seller: 'sellerName'}}
+        # data = {'username': }
+        return HttpResponse(status=200)
 
 def exit(request):
     if request.method == 'POST':
         logout(request)
+        return HttpResponse(status=200)
+
+def offer(request):
+    if request.method == "GET":
+        return render(request, 'offer.html')
+    if request.method == "POST":
         return HttpResponse(status=200)
 
 def ask_json(request):
