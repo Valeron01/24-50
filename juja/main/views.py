@@ -13,6 +13,8 @@ def index(request):
     print(request.user)
     return render(request, 'index.html')
 
+def check_auth(request):
+    return JsonResponse({'logged': request.user.is_authenticated})
 
 def register_page(request):
     if request.user.is_authenticated:

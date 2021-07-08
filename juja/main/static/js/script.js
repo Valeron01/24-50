@@ -1,10 +1,23 @@
 'use strict';
 
 document.cookie = 'logged=false';
-var userIsLogin = getCookie('logged')
+var userIsLogin = getCookie('logged');
 
 window.onload = () => {
-    checkAuth();
+    $.ajax({
+        url: '/auth',
+        methos: 'post',
+        data: {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        },
+        async:false,
+        success: function(data) {
+            setCookie('logged', data.logged);
+            userIsLogin = getCookie('logged');
+        }
+    });
+    
+    checkAuth(userIsLogin);
     initEventHandlers();
     
 }   
@@ -31,7 +44,6 @@ function initEventHandlers() {
                         },
                         
                         success: function(data) {
-                            setCookie('logged', true);
                             if (data.is_logged) {
                                $.ajax({
                                 url: '/user',
@@ -40,11 +52,13 @@ function initEventHandlers() {
                                 success: function(data) {
                                     $('.window__close').trigger('click');
                                     $('#main_page').html(data);
-                                    checkAuth();
+                                    setCookie('logged', true);
+                                    userIsLogin = getCookie('logged');
+                                    checkAuth(userIsLogin);
                                 }
                                });
                             } else {
-                                $('#message').text("Неверный логин или пароль").css('display', 'block');
+                                $('.message').text("Неверный логин или пароль").css('display', 'block');
                             }
                         }
                     });
@@ -56,8 +70,8 @@ function initEventHandlers() {
                 });
                 
                 //Кнопка "Закрыть"
-                $("#close-auth").on("click", () => {
-                    $('#close-auth').parent().parent().remove();
+                $(".window__close").on("click", () => {
+                    $('.window__close').parent().parent().remove();
                 });
             }
         });
@@ -101,6 +115,7 @@ function initEventHandlers() {
                         success: function(data) {
                             if (data.is_reg) {
                                 setCookie('logged', data.is_logged);
+                                userIsLogin = Boolean(getCookie('logged'));
                                 $.ajax({
                                     url: '/user',
                                     method: 'get',
@@ -113,7 +128,7 @@ function initEventHandlers() {
                                             success: function(data) {
                                                 $('.window__close').trigger('click');
                                                 $('.main').html(data);
-                                                checkAuth();
+                                                checkAuth(userIsLogin);
                                             }
                                         })
                                         
@@ -131,6 +146,7 @@ function initEventHandlers() {
     });
    
     ///////////////////////////////////////////////
+    // Кнопка выхода из аккаунта
     $('#exit').on('click', () => {
         $.ajax({
             url: '/exit',
@@ -139,14 +155,18 @@ function initEventHandlers() {
                 csrfmiddlewaretoken: getCookie('csrftoken')
             },
             success: function(data) {
-                console.log("Хуяк вертушка!")
+                setCookie('logged', false);
+                userIsLogin = getCookie('logged');
+                window.location.href = "/";
+                checkAuth(userIsLogin);
             }
         });
     });
 }
 
-function checkAuth() {
-    if (userIsLogin) {
+function checkAuth(value) {
+    value = (value == 'true') ? true : false;
+    if (value) {
         $(".unlogin").css('display', 'none');
         $(".login").css('display', 'block');
     } else {
