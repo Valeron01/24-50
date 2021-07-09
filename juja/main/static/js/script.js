@@ -237,6 +237,7 @@ function getUserPage() {
                         },
                         success: function(data) {
                             alert('Покупка успешно совершена');
+                            location.reload();
                         }
                     });
                 }
