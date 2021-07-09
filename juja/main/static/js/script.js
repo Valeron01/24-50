@@ -192,6 +192,18 @@ function getMainPage() {
         success: function(data) {
             $('#main_page').html(data);
             getCategories('#category__list');
+            $.ajax({
+                url: '/products',
+                method: 'post',
+                dataType: 'json',
+                data: {
+                    csrfmiddlewaretoken: getCookie('csrftoken')
+                },
+                success: function(data) {
+                    addProducts('#showcase', data.products);
+                }
+            })
+            
         }
     });
 }
@@ -245,10 +257,38 @@ function checkAuth(value) {
  }
 
  function addProducts(selectorId, products) {
-     console.log(products);
     for (var i = 0; i < products.length; i++) {
-        $(selectorId).append('<div class="showcase__product product"><img class="product__img" src="/static/img/products/'+products[i].image+'" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span>категория:</span> <span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><div class="product__cost cost">'+products[i].cost+'</div><div class="button buy__btn">В корзину</div></div>');
+        $(selectorId).append('<div id="'+product[i].id+'">'+product[i].id+'+</div><div class="showcase__product product"><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+i+'">-</div><div id="number'+i+'" class="counter__number">1</div><div id="counter__right'+i+'">+</div></div><div id="btn'+i+'"class="button buy__btn">В корзину</div></div>');
+        minus('#counter__left'+i, '#number'+i);
+        plus('#counter__right'+i, '#number'+i);
     }
+ }
+
+ 
+function addToCart(selector, targetId, targetCoint) {
+
+}
+
+ function minus(selector, target) {
+     $(selector).on('click', () => {
+        var count = +$(target).text();
+        if (count > 1) 
+            count--;
+        $(target).text(count);
+     });  
+ }
+
+ function plus(selector, target) {
+    $(selector).on('click', () => {
+        var count = +$(target).text();
+        if (count < 100) 
+            count++;
+        $(target).text(count);
+     });  
+ }
+
+ function addActionListener(selector, e, cb) {
+    $(selector).on(e, cb);
  }
 
 function getCategories(selectorId) {
