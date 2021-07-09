@@ -223,6 +223,8 @@ function getUserPage() {
             $('#username').text(info.username);
             $('#balance').text(info.balance);
             addProducts('#cart', info.products, true);
+            $('#summa').text(info.summary_price);           
+            
         }
     });
 }
