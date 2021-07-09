@@ -233,6 +233,23 @@ body {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+  .counter {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    > div {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background-color: #fff;
+      text-align: center;
+      margin: 0 3px;
+      font-size: 20px;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+    
+  }
 }
 
 .main .place .showcase .product .product__name {
@@ -257,6 +274,7 @@ body {
 
 .main .place .showcase .product .product__cost {
   padding-bottom: 15px;
+  font-size: 25px;
 }
 
 .main .place .showcase .product .product__cost::after {
@@ -270,7 +288,7 @@ body {
   background-color: #DCDCDC;
   border-radius: 5px;
   max-width: 175px;
-  max-height: 350px;
+  max-height: 100%;
 }
 
 .main .place .place__category {

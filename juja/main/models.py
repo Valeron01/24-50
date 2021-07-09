@@ -22,6 +22,8 @@ class Cart(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
     product = models.ForeignKey(Product, models.CASCADE)
     num = models.IntegerField(default=1)
+    class Meta:
+        unique_together = [['user', 'product']]
 
     def __str__(self):
         return f'{self.user.username} -> {self.product}x{self.num}'

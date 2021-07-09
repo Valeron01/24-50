@@ -158,19 +158,24 @@ def add_to_cart(request:HttpRequest):
     if not request.user.is_authenticated:
         return HttpResponse(status=403)
     
-    if request.method == 'GET':
-        data = request.GET
-        try:
-            print('*'*100)
-            print(data['id'])
-
-            q = Cart.objects.get(user=request.user, product=0)
+    if request.method == 'POST':
+        data = request.POST
+        try: # Обновление уже существующей пары юзер - продукт
+            q = Cart.objects.get(user=request.user, product__pk = data['id'])
 
             q.num += int(data['num'])
             q.save()
-        except ObjectDoesNotExist:
-            c = Cart(request.user.id, data['id'], num=data['num'])
+        except ObjectDoesNotExist: # Добавление нового товара в корзину
+            product = Product.objects.get(pk=data['id']) # Ищем продукт в списке продуктов
+
+            c = Cart(user=request.user, product=product, num=data['num']) # Создаем новую корзину
             c.save()
-            pass
 
         return HttpResponse(status=200)
+    
+    return HttpResponse(status=501)
+
+
+def add_product(request):
+    if not request.user.is_authenticated or not UserDetail.objects.get(user=request.user).is_seller: # 
+        return HttpResponse(status=403)
