@@ -189,3 +189,19 @@ def add_product(request):
                       seller=User.objects.get(username=data['username']))
             
     return HttpResponse('OK', status=200)
+
+def modify_cart(request:HttpRequest):
+    if not request.user.is_authenticated:
+        return HttpResponse(status=403)
+
+    data = request.GET
+    cart_id = data.keys[0]
+
+    cart = Cart.objects.get(id=cart_id)
+
+    if data[cart_id] == 'delete':
+        cart.delete()
+    elif data[cart_id] == '':
+        pass
+    
+    return JsonResponse({'name':cart.product.name})
