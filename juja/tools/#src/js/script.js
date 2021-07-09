@@ -223,8 +223,24 @@ function getUserPage() {
             $('#username').text(info.username);
             $('#balance').text(info.balance);
             addProducts('#cart', info.products, true);
-            $('#summa').text(info.summary_price);           
-            
+            $('#summa').text(info.summary_price);
+            $('.summa > .button').on('click', () => {
+                if (info.balance < info.summary_price) {
+                    alert('Недостаточно средств!\n Пополните счет')
+                } else {
+                    $.ajax({
+                        url: '/payment',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {
+                            csrfmiddlewaretoken: getCookie('csrftoken')
+                        },
+                        success: function(data) {
+                            window.reload();  
+                        }
+                    });
+                }
+            });
         }
     });
 }
