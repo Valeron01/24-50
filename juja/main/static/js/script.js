@@ -236,7 +236,8 @@ function getUserPage() {
                             csrfmiddlewaretoken: getCookie('csrftoken')
                         },
                         success: function(data) {
-                            window.reload();  
+                            alert('Покупка успешно совершена');
+                            location.reload();
                         }
                     });
                 }
