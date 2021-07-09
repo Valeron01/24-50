@@ -196,17 +196,14 @@ def modify_cart(request:HttpRequest):
 
     data = request.POST
 
-    print(data)
+    product_id = list(data.keys())[0]
+
+    cart = Cart.objects.get(product__pk=product_id)
 
 
-    cart_id = list(data.keys())[0]
-
-    cart = Cart.objects.get(id=cart_id)
-
-
-    if data[cart_id] == 'delete':
+    if data[product_id] == 'delete':
         cart.delete()
-    elif data[cart_id] == '':
+    elif data[product_id] == '':
         pass
     
     return JsonResponse({'name':cart.product.name})
