@@ -256,10 +256,11 @@ function checkAuth(value) {
      return info; 
  }
 
- function addProducts(selectorId, products, isUser) {
+// Добавление продукта на страницу по ID селектора
+function addProducts(selectorId, products, isUser) {
     for (var i = 0; i < products.length; i++) {
         var id = products[i].id;
-        var content = (isUser)? '<div style="display: none" id="'+id+'">'+id+'</div><div class="showcase__product product"><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">1</div><div id="counter__right'+id+'">+</div></div></div>' 
+        var content = (isUser)? '<div style="display: none" id="'+id+'">'+id+'</div><div class="showcase__product product"><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">'+products[i].num+'</div><div id="counter__right'+id+'">+</div></div></div>' 
         : '<div style="display: none" id="'+id+'">'+id+'</div><div class="showcase__product product"><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">1</div><div id="counter__right'+id+'">+</div></div><div id="btn'+id+'"class="button buy__btn">В корзину</div></div>';
         
         $(selectorId).append(content);
@@ -267,9 +268,9 @@ function checkAuth(value) {
         plus('#counter__right'+id, '#number'+id);
         addToCart('#btn'+id, '#'+products[i].id, '#number'+id);
     }
- }
+}
 
- 
+//Добавление в товара в корзину
 function addToCart(selector, targetId, targetCount) {
     $(selector).on('click', () => {
         var idP = +$(targetId).text();
@@ -288,7 +289,7 @@ function addToCart(selector, targetId, targetCount) {
     });
     
 }
-
+// Уменьшение кол-ва тединиц товара
  function minus(selector, target) {
      $(selector).on('click', () => {
         var count = +$(target).text();
@@ -297,20 +298,18 @@ function addToCart(selector, targetId, targetCount) {
         $(target).text(count);
      });  
  }
-
- function plus(selector, target) {
+// Увеличение кол-ва тединиц товара
+function plus(selector, target) {
     $(selector).on('click', () => {
         var count = +$(target).text();
         if (count < 100) 
             count++;
         $(target).text(count);
-     });  
- }
+    });  
+}
 
- function addActionListener(selector, e, cb) {
-    $(selector).on(e, cb);
- }
 
+//Запрос категорий
 function getCategories(selectorId) {
     $.ajax({
         url: '/categories',
