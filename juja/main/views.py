@@ -85,7 +85,8 @@ def user_page(request:HttpRequest):
                 'description':i.description,
                 'category': i.category.name,
                 'image': i.image_name,
-                'num': n['num']
+                'num': n['num'],
+                'id':i.id
             }
             products_info.append(p)
 
