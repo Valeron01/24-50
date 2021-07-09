@@ -12,7 +12,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import *
 
 def index(request):
-    print(request.user)
     if request.method == "GET":
         return render(request, 'index.html')
         # Пиздец тебе, коомент ебаный
@@ -73,9 +72,9 @@ def user_page(request:HttpRequest):
 
         products_ids = Cart.objects.filter(user__id=request.user.id).values('product')
         nums = Cart.objects.filter(user__id=request.user.id).values('num')
-        prices = Cart.objects.filter(user__id=request.user.id).values('price')
 
         products = Product.objects.filter(id__in=products_ids)
+        prices = Product.objects.filter(id__in=products_ids).values('price')
 
         products_info = []
         for i, n in zip(products, nums):
@@ -94,7 +93,7 @@ def user_page(request:HttpRequest):
         summary_price = 0
 
         for n, p in zip(nums, prices):
-            summary_price += n * p
+            summary_price += n['num'] * p['price']
         
         data = {
             'username': request.user.username,
@@ -139,7 +138,6 @@ def offer(request:HttpRequest):
 
 def get_products(request):
     products = Product.objects.all()
-    print(products)
 
     data = [{
             'productName': i.name,
