@@ -260,13 +260,14 @@ function checkAuth(value) {
 function addProducts(selectorId, products, isUser) {
     for (var i = 0; i < products.length; i++) {
         var id = products[i].id;
-        var content = (isUser)? '<div style="display: none" id="'+id+'">'+id+'</div><div class="showcase__product product"><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">'+products[i].num+'</div><div id="counter__right'+id+'">+</div></div></div>' 
+        var content = (isUser)? '<div style="display: none" id="'+id+'">'+id+'</div><div class="showcase__product product"><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">'+products[i].num+'</div><div id="counter__right'+id+'">+</div><div id="close'+id+'"><img width=15 src="static/img/close.png" alt=""></div></div>' 
         : '<div style="display: none" id="'+id+'">'+id+'</div><div class="showcase__product product"><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">1</div><div id="counter__right'+id+'">+</div></div><div id="btn'+id+'"class="button buy__btn">В корзину</div></div>';
         
         $(selectorId).append(content);
         minus('#counter__left'+id, '#number'+id);
         plus('#counter__right'+id, '#number'+id);
         addToCart('#btn'+id, '#'+products[i].id, '#number'+id);
+        deleteFromCart('#close'+id, '#'+products[i].id);
     }
 }
 
@@ -288,6 +289,24 @@ function addToCart(selector, targetId, targetCount) {
         });
     });
     
+}
+function deleteFromCart(selector, targetId) {
+    $(selector).on('click', () => {
+        var idP = +$(targetId).text();
+
+        $.ajax({
+            url: '/modify_cart',
+            method: 'post',
+            dataType: 'json',
+            data: {
+                idp: 'delete',
+                csrfmiddlewaretoken: getCookie('csrftoken')
+            },
+            success: function(data) {
+                $(targetId).parent().remove();
+            }
+        });
+    });
 }
 // Уменьшение кол-ва тединиц товара
  function minus(selector, target) {
