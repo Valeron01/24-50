@@ -179,3 +179,12 @@ def add_to_cart(request:HttpRequest):
 def add_product(request):
     if not request.user.is_authenticated or not UserDetail.objects.get(user=request.user).is_seller: # 
         return HttpResponse(status=403)
+    
+    data = request.POST
+
+    product = Product(name=data['name'], description=data['description'],
+                      category=Category.objects.get(name=data['category']),
+                      price = data['price'],
+                      seller=User.objects.get(username=data['username']))
+            
+    return HttpResponse('OK', status=200)
