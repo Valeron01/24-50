@@ -7,6 +7,8 @@ from django.template.loader import render_to_string
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.db import IntegrityError
+from django.core.exceptions import ObjectDoesNotExist
+
 from .models import *
 
 def index(request):
@@ -128,17 +130,7 @@ def offer(request:HttpRequest):
         offer_data.save()
         return HttpResponse(status=200)
 
-def ask_json(request):
-    dict = {
-        'user': 'Valeron',
-        'GET': request.GET,
-        'POST': request.POST
-    }
-
-    return JsonResponse(dict)
-
 def get_products(request):
-
     products = Product.objects.all()
     print(products)
 
@@ -149,6 +141,7 @@ def get_products(request):
             'description': i.description,
             'category': i.category.name,
             'image': i.image_name,
+            'id': i.id
             }
             for i in products]
     return JsonResponse({'products': data})
@@ -160,3 +153,24 @@ def get_categories(request):
     
         return JsonResponse({'categories': categories})
     return HttpResponse(status=500)
+
+def add_to_cart(request:HttpRequest):
+    if not request.user.is_authenticated:
+        return HttpResponse(status=403)
+    
+    if request.method == 'GET':
+        data = request.GET
+        try:
+            print('*'*100)
+            print(data['id'])
+
+            q = Cart.objects.get(user=request.user, product=0)
+
+            q.num += int(data['num'])
+            q.save()
+        except ObjectDoesNotExist:
+            c = Cart(request.user.id, data['id'], num=data['num'])
+            c.save()
+            pass
+
+        return HttpResponse(status=200)
