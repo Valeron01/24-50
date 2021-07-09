@@ -261,12 +261,28 @@ function checkAuth(value) {
         $(selectorId).append('<div style="display: none" id="'+products[i].id+'">'+products[i].id+'</div><div class="showcase__product product"><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+i+'">-</div><div id="number'+i+'" class="counter__number">1</div><div id="counter__right'+i+'">+</div></div><div id="btn'+i+'"class="button buy__btn">В корзину</div></div>');
         minus('#counter__left'+i, '#number'+i);
         plus('#counter__right'+i, '#number'+i);
+        addToCart('#btn'+i, '#'+products[i].id, '#number'+i);
     }
  }
 
  
-function addToCart(selector, targetId, targetCoint) {
+function addToCart(selector, targetId, targetCount) {
+    $(selector).on('click', () => {
+        var idP = +$(targetId).text();
+        var countP = +$(targetCount).text();
 
+        $.ajax({
+            url: '/add_to_cart',
+            method: 'post',
+            dataType: 'json',
+            data: {
+                id: idP,
+                num: countP, 
+                csrfmiddlewaretoken: getCookie('csrftoken')
+            }
+        });
+    });
+    
 }
 
  function minus(selector, target) {
