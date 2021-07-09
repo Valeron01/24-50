@@ -213,6 +213,8 @@ def modify_cart(request:HttpRequest):
     return JsonResponse({'name':cart.product.name})
 
 def payment(request):
+    if not request.user.is_authenticated:
+        return HttpResponse(status=403)
     cart = Cart.objects.filter(user__id=request.user.id)
     products_ids = cart.values('product')
     nums = cart.values('num')
@@ -229,3 +231,5 @@ def payment(request):
     if summary_price < ud.balance:
         ud.balance -= summary_price
         cart.delete()
+    
+    return HttpResponse(status=200)
