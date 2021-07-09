@@ -73,6 +73,7 @@ def user_page(request:HttpRequest):
 
         products_ids = Cart.objects.filter(user__id=request.user.id).values('product')
         nums = Cart.objects.filter(user__id=request.user.id).values('num')
+        prices = Cart.objects.filter(user__id=request.user.id).values('price')
 
         products = Product.objects.filter(id__in=products_ids)
 
@@ -89,12 +90,17 @@ def user_page(request:HttpRequest):
                 'id':i.id
             }
             products_info.append(p)
+        
+        summary_price = 0
 
+        for n, p in zip(nums, prices):
+            summary_price += n * p
         
         data = {
             'username': request.user.username,
             'balance': UserDetail.objects.get(user=request.user).balance,
-            'products': products_info
+            'products': products_info,
+            'summary_price': summary_price
         }
 
         # передаем данные о пользователе
@@ -203,7 +209,7 @@ def modify_cart(request:HttpRequest):
 
     if data[product_id] == 'delete':
         cart.delete()
-    elif data[product_id] == '':
+    elif data[product_id] == '+1':
         pass
     
     return JsonResponse({'name':cart.product.name})
