@@ -211,3 +211,21 @@ def modify_cart(request:HttpRequest):
         pass
     
     return JsonResponse({'name':cart.product.name})
+
+def payment(request):
+    cart = Cart.objects.filter(user__id=request.user.id)
+    products_ids = cart.values('product')
+    nums = cart.values('num')
+
+    products = Product.objects.filter(id__in=products_ids)
+    prices = Product.objects.filter(id__in=products_ids).values('price')
+
+    summary_price = 0
+
+    for n, p in zip(nums, prices):
+        summary_price += n['num'] * p['price']
+    
+    ud = UserDetail.objects.get(user=request.user)
+    if summary_price < ud.balance:
+        ud.balance -= summary_price
+        cart.delete()
