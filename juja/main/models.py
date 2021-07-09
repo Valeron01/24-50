@@ -26,7 +26,7 @@ class Cart(models.Model):
         unique_together = [['user', 'product']]
 
     def __str__(self):
-        return f'{self.user.username} -> {self.product}x{self.num}'
+        return f'{self.id}; {self.user.username} -> {self.product}x{self.num}'
 
 class UserDetail(models.Model):
     user = models.ForeignKey(User, models.CASCADE)

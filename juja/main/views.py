@@ -194,10 +194,15 @@ def modify_cart(request:HttpRequest):
     if not request.user.is_authenticated:
         return HttpResponse(status=403)
 
-    data = request.GET
-    cart_id = data.keys[0]
+    data = request.POST
+
+    print(data)
+
+
+    cart_id = list(data.keys())[0]
 
     cart = Cart.objects.get(id=cart_id)
+
 
     if data[cart_id] == 'delete':
         cart.delete()

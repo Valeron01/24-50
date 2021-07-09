@@ -294,14 +294,16 @@ function deleteFromCart(selector, targetId) {
     $(selector).on('click', () => {
         var idP = +$(targetId).text();
 
+        var data = {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        }
+        data[idP] = 'delete',
+
         $.ajax({
             url: '/modify_cart',
             method: 'post',
             dataType: 'json',
-            data: {
-                idp: 'delete',
-                csrfmiddlewaretoken: getCookie('csrftoken')
-            },
+            data: data,
             success: function(data) {
                 $(targetId).parent().remove();
             }
