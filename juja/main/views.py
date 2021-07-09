@@ -233,4 +233,4 @@ def payment(request):
         ud.save()
         cart.delete()
     
-    return HttpResponse(status=200)
+    return JsonResponse({'data':'success'})
