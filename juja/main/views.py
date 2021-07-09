@@ -230,6 +230,7 @@ def payment(request):
     ud = UserDetail.objects.get(user=request.user)
     if summary_price < ud.balance:
         ud.balance -= summary_price
+        ud.save()
         cart.delete()
     
     return HttpResponse(status=200)
