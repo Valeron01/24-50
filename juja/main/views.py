@@ -237,8 +237,8 @@ def payment(request):
     return JsonResponse({'data':'success'})
 
 def sort_category(request:HttpRequest()):
-    if request.method == "GET":
-        category_id = request.GET['category_id']
+    if request.method == "POST":
+        category_id = request.POST['category_id']
 
         products = Product.objects.filter(category__pk=category_id)
 
