@@ -155,6 +155,7 @@ def get_categories(request):
     if request.method == 'POST':
         categories = Category.objects.all().values('name')
         categories = [i['name'] for i in categories]
+        # TODO Добавить id категории
     
         return JsonResponse({'categories': categories})
     return HttpResponse(status=500)
@@ -234,3 +235,9 @@ def payment(request):
         cart.delete()
     
     return JsonResponse({'data':'success'})
+
+def sort_category(request):
+    if request.method == "POST":
+        # TODO выбрать товары по id категории
+        return HttpResponse(status=200) # Загрушка
+    return JsonResponse({}) #Заглушка

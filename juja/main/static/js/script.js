@@ -293,19 +293,24 @@ function addProducts(selectorId, products, isUser) {
 //Добавление в товара в корзину
 function addToCart(selector, targetId, targetCount) {
     $(selector).on('click', () => {
-        var idP = +$(targetId).text();
-        var countP = +$(targetCount).text();
+        if ((userIsLogin == 'true')? true : false) {
+            var idP = +$(targetId).text();
+            var countP = +$(targetCount).text();
 
-        $.ajax({
-            url: '/add_to_cart',
-            method: 'post',
-            dataType: 'json',
-            data: {
-                id: idP,
-                num: countP, 
-                csrfmiddlewaretoken: getCookie('csrftoken')
-            }
-        });
+            $.ajax({
+                url: '/add_to_cart',
+                method: 'post',
+                dataType: 'json',
+                data: {
+                    id: idP,
+                    num: countP, 
+                    csrfmiddlewaretoken: getCookie('csrftoken')
+                }
+            });
+        } else {
+            $('#login').trigger('click');
+        }
+        
     });
     
 }
@@ -360,10 +365,28 @@ function getCategories(selectorId) {
         },
         success: function(data) {
             for (var i = 0; i < data.categories.length; i++) {
-                $(selectorId).append('<li class="list__item">'+data.categories[i]+'</li>');
+                $(selectorId).append('<li id="category'+data.categories[i].id+'" class="list__item">'+data.categories[i]+'</li>');
+                onClickCategory('#category'+data.categories[i].id, '#showcase', data.categories[i].id);
             }
         },
         async: false
+    });
+}
+
+function onClickCategory(selector, targer, id) {
+    $(selector).on('click', () => {
+        $.ajax({
+            url: '/sort_category',
+            method: 'post',
+            dataType: 'json',
+            data: {
+                id: id,
+                csrfmiddlewaretoken: getCookie('csrftoken')
+            },
+            success: function(data) {
+                addProducts(targer, data.products, (getCookie('logged') == 'true')?true:false);
+            }
+        });
     });
 }
 
