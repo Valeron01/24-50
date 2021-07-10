@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
-
+from .utils import *
 from .models import *
 
 def index(request):
@@ -153,11 +153,11 @@ def get_products(request):
 
 def get_categories(request):
     if request.method == 'POST':
-        categories = Category.objects.all().values('name')
-        categories = [i['name'] for i in categories]
-        # TODO Добавить id категории
+        categories = Category.objects.all().values('name', 'id')
+        categories_names = [i['name'] for i in categories]
+        categories_ids = [i['id'] for i in categories]
     
-        return JsonResponse({'categories': categories})
+        return JsonResponse({'categories': categories_names, 'categories_ids': categories_ids})
     return HttpResponse(status=500)
 
 def add_to_cart(request:HttpRequest):
@@ -236,8 +236,12 @@ def payment(request):
     
     return JsonResponse({'data':'success'})
 
-def sort_category(request):
-    if request.method == "POST":
-        # TODO выбрать товары по id категории
-        return HttpResponse(status=200) # Загрушка
-    return JsonResponse({}) #Заглушка
+def sort_category(request:HttpRequest()):
+    if request.method == "GET":
+        category_id = request.GET['category_id']
+
+        products = Product.objects.filter(category__pk=category_id)
+
+        data = [product_to_json(i) for i in products]
+        return JsonResponse({'products': data}) #Заглушка
+    return HttpResponse(status=500) # Загрушка
