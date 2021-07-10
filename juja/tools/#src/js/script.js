@@ -279,7 +279,7 @@ function checkAuth(value) {
 function addProducts(selectorId, products, isUser) {
     for (var i = 0; i < products.length; i++) {
         var id = products[i].id;
-        var content = (isUser)? '<div class="showcase__product product"><div style="display: none" id="'+id+'">'+id+'</div><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">'+products[i].num+'</div><div id="counter__right'+id+'">+</div><div id="close'+id+'"><img width=15 src="static/img/close.png" alt=""></div></div>' 
+        var content = (isUser)? '<div class="showcase__product product"><div style="display: none" id="'+id+'">'+id+'</div><div id="ctgr'+id+'">'+products[i].category+'</div><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">'+products[i].num+'</div><div id="counter__right'+id+'">+</div><div id="close'+id+'"><img width=15 src="static/img/close.png" alt=""></div></div>' 
         : '<div style="display: none" id="'+id+'">'+id+'</div><div class="showcase__product product"><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">1</div><div id="counter__right'+id+'">+</div></div><div id="btn'+id+'"class="button buy__btn">В корзину</div></div>';
         
         $(selectorId).append(content);
@@ -364,31 +364,34 @@ function getCategories(selectorId) {
             csrfmiddlewaretoken: getCookie('csrftoken') 
         },
         success: function(data) {
+            console.log(data.categories_ids)
             for (var i = 0; i < data.categories.length; i++) {
-                $(selectorId).append('<li id="category'+data.categories[i].id+'" class="list__item">'+data.categories[i]+'</li>');
-                onClickCategory('#category'+data.categories[i].id, '#showcase', data.categories[i].id);
+                $(selectorId).append('<li id="category'+data.categories_ids[i]+'" class="list__item">'+data.categories[i]+'</li>');
+                onClickCategory('#category'+data.categories_ids[i], '#showcase', data.categories_ids[i]);
             }
         },
         async: false
     });
 }
 
-function onClickCategory(selector, targer, id) {
+function onClickCategory(selector, target, id) {
     $(selector).on('click', () => {
         $.ajax({
             url: '/sort_category',
             method: 'post',
             dataType: 'json',
             data: {
-                id: id,
+                category_id: id,
                 csrfmiddlewaretoken: getCookie('csrftoken')
             },
             success: function(data) {
-                addProducts(targer, data.products, (getCookie('logged') == 'true')?true:false);
+                $(target + ' > *').remove();
+                addProducts(target, data.products, false);
             }
         });
     });
 }
+
 
 // Вспомогательные функции для работы с Cookies
 function getCookie(name) {
