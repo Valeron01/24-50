@@ -22,7 +22,9 @@ def index(request):
 
 
 def check_auth(request):
-    return JsonResponse({'logged': request.user.is_authenticated})
+    # Добавил поле "seller"
+    return JsonResponse({'logged': request.user.is_authenticated,
+                         'seller': request.user.groups.filter(name='sellers').exists()})
 
 
 def register_page(request):
@@ -283,5 +285,36 @@ def sort_category(request: HttpRequest()):
         products = Product.objects.filter(category__pk=category_id)
 
         data = [product_to_json(i) for i in products]
+        return JsonResponse({'products': data}) #Заглушка
+    return HttpResponse(status=500) # Загрушка
+
+def top_up_balance(request):
+    #TODO  Пополнение баланса
+    if request.method == 'POST':
+        return HttpResponse(status=200)
+    return HttpResponse(status=505)
+
+def products_seller(request):
+    if request.method == "GET":
+        return render(request, 'seller.html')
+    if request.method == "POST":
+        products = Product.objects.all() # Сделать выборку по товарам текущего пользователя если он продавец
+
+        data = [{
+                'productName': i.name,
+                'cost': i.price,
+                'seller': i.seller.username,
+                'description': i.description,
+                'category': i.category.name,
+                'image': i.image_name,
+                'id': i.id
+            }
+            for i in products]
+
         return JsonResponse({'products': data})
-    return HttpResponse(status=500)  # Загрушка
+    return HttpResponse(status=505)
+
+def delete_product(request):
+    if request.method == "POST":
+        #TODO удаление товара 
+        return HttpResponse(status=200)

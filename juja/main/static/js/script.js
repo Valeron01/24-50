@@ -1,9 +1,10 @@
 'use strict';
 
-document.cookie = 'logged=false';
+document.cookie = 'logged=false; seller=false';
 var userIsLogin = getCookie('logged');
+var userIsSeller = getCookie('seller');
 
-window.onload = () => {
+window.onload = function() {
     $.ajax({
         url: '/auth',
         methos: 'post',
@@ -13,7 +14,9 @@ window.onload = () => {
         async:false,
         success: function(data) {
             setCookie('logged', data.logged);
+            setCookie('seller', data.seller);
             userIsLogin = getCookie('logged');
+            userIsSeller= getCookie('seller');
         }
     });
     
@@ -143,7 +146,7 @@ function initEventHandlers() {
                     $('.window__close').parent().parent().remove();
                 });
 
-                $('.form__btn').on('click', () => {
+                $('#offerBtn').on('click', () => {
                     $.ajax({
                         url: '/offer',
                         method: 'post',
@@ -154,32 +157,68 @@ function initEventHandlers() {
                             email: $('#userEmail').val(),
                             message: $('#userOffer').val(),
                             csrfmiddlewaretoken: getCookie('csrftoken')
-                        },
-                        success: function(data) {
-                            $('.window__close').trigger('click');
                         }
                     });
+                    $('.window__close').trigger('click');
+                    alert('Ваша заявка успешно отправлена! \n Ответ с решеним вы получите по электронной почте.');
                 });
             }
         });
     });
 
     // Кпонка "Главная"
-    $('#mainPage').on('click', () => {
-        getMainPage();
-    });
+    $('#mainPage').on('click', getMainPage);
 
     //Кнопка "Корзина"
-    $('#basket').on('click', () => {
-        getUserPage();
-    });
+    $('#basket').on('click', getUserPage);
 
     // Кнопка "Личный кабинет"
-    $('#personalAccount').on('click', () => {
-        getUserPage();
-    });
+    $('#personalAccount').on('click', getUserPage);
+
+    // Кнопка "Мои товары"
+    $('#seller_products').on('click', getSellerPage)
 }
 
+
+function getSellerPage() {
+    $.ajax({
+        url: '/seller',
+        method: 'get',
+        dataType: 'html',
+        success: function (data) {
+            $('#main_page').html(data);
+            $('#addProducts_btn').on('click', addProduct);
+            var userdata = getUserData();
+            $('#username').text(userdata.username);
+            $('#balance').text(userdata.balance);
+            $('#summa').text(userdata.summary_price);
+            var info = getSellerProducts();
+            addProducts('#products', info.products, true);
+
+            $('.counter').remove();
+            $('.product').append('<div class="button remove_product"><img href={% static "img/close.png"%}>Удалить</div>');
+            $('.remove_product').on('click', function () {
+                deleteProduct($( this ).parent());
+            });
+        }
+    });
+}
+function getSellerProducts() {
+    var info;
+    $.ajax({
+        url: '/seller',
+        method: 'post',
+        dataType: 'json',
+        data: {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        },
+        success: function(data) {
+            info = data;
+        },
+        async: false
+    });
+    return info;
+}
 // Загрузка контента главной страницы
 function getMainPage() {
     $.ajax({
@@ -204,10 +243,30 @@ function getMainPage() {
                 }
             })
             
-        }
+        },
+        async: false
     });
 }
 
+function deleteProduct(parent) {
+    var id_p = +parent.find('.id').text();
+    $.ajax({
+        url: '/delete_product',
+        method: 'post',
+        data: {
+            id: id_p,
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        },
+        success: function(data) {
+            getSellerPage();
+        }
+
+    });
+}
+
+function addProduct() {
+    
+}
 // Загрузка контента страницы пользователя
 function getUserPage() {
     $.ajax({
@@ -224,6 +283,19 @@ function getUserPage() {
             $('#balance').text(info.balance);
             addProducts('#cart', info.products, true);
             $('#summa').text(info.summary_price);
+            $('#topUpBtn').on('click', () => {
+                $.ajax({
+                    url: '/balance',
+                    method: 'post',
+                    dataType: 'json',
+                    data: {
+                        csrfmiddlewaretoken: getCookie('csrftoken')
+                    },
+                    success: function (data) {
+                        
+                    }
+                });
+            });
             $('.summa > .button').on('click', () => {
                 if (info.balance < info.summary_price) {
                     alert('Недостаточно средств!\n Пополните счет')
@@ -252,13 +324,20 @@ function checkAuth(value) {
     if (value) {
         $(".unlogin").css('display', 'none');
         $(".login").css('display', 'block');
+
+        if ((userIsSeller=='true')?false:true) {
+            $('#seller_products').css('display', 'none');
+        } else {
+            $('#offer').css('display', 'none');
+        }
     } else {
         $(".unlogin").css('display', 'block');
         $(".login").css('display', 'none');
     }
 }
-// Получение данных о пользователе:
- function getUserData() {
+
+// Получение данных о пользователе: 
+function getUserData() {
      var info;
      $.ajax({
         url: '/user',
@@ -273,14 +352,14 @@ function checkAuth(value) {
         async: false
      });
      return info; 
- }
+}
 
 // Добавление продукта на страницу по ID селектора
 function addProducts(selectorId, products, isUser) {
     for (var i = 0; i < products.length; i++) {
         var id = products[i].id;
-        var content = (isUser)? '<div class="showcase__product product"><div style="display: none" id="'+id+'">'+id+'</div><div id="ctgr'+id+'">'+products[i].category+'</div><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">'+products[i].num+'</div><div id="counter__right'+id+'">+</div><div id="close'+id+'"><img width=15 src="static/img/close.png" alt=""></div></div>' 
-        : '<div style="display: none" id="'+id+'">'+id+'</div><div class="showcase__product product"><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">1</div><div id="counter__right'+id+'">+</div></div><div id="btn'+id+'"class="button buy__btn">В корзину</div></div>';
+        var content = (isUser)? '<div class="showcase__product product"><div class="id" style="display: none" id="'+id+'">'+id+'</div><div id="ctgr'+id+'"style="display: none">'+products[i].category+'</div><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">'+products[i].num+'</div><div id="counter__right'+id+'">+</div><div id="close'+id+'"><img width=15 src="static/img/close.png" alt=""></div></div>' 
+        : '<div class="showcase__product product"><div style="display: none" id="'+id+'">'+id+'</div><img class="product__img" src="/static/img/products/'+products[i].image+'" onerror="this.src=`/static/img/noimage.png`" alt=""><h3 class="product__name">'+products[i].productName+'</h3><p class="product__category"><span class="category__name">'+ products[i].category+'</span></p><p class="product__descipt">'+products[i].description+'</p><p class="product__seller"><span>Продавец: </span><span class="product__sellername">'+products[i].seller+'</span></p><div class="product__cost cost">'+products[i].cost+'</div><div class="product__counter counter"><div id="counter__left'+id+'">-</div><div id="number'+id+'" class="counter__number">1</div><div id="counter__right'+id+'">+</div></div><div id="btn'+id+'"class="button buy__btn">В корзину</div></div>';
         
         $(selectorId).append(content);
         minus('#counter__left'+id, '#number'+id);
@@ -330,19 +409,21 @@ function deleteFromCart(selector, targetId) {
             data: data,
             success: function(data) {
                 $(targetId).parent().remove();
+                var info = getUserData();
+                $('#summa').text(info.summary_price);
             }
         });
     });
 }
 // Уменьшение кол-ва тединиц товара
- function minus(selector, target) {
+function minus(selector, target) {
      $(selector).on('click', () => {
         var count = +$(target).text();
         if (count > 1) 
             count--;
         $(target).text(count);
      });  
- }
+}
 // Увеличение кол-ва тединиц товара
 function plus(selector, target) {
     $(selector).on('click', () => {
@@ -364,7 +445,6 @@ function getCategories(selectorId) {
             csrfmiddlewaretoken: getCookie('csrftoken') 
         },
         success: function(data) {
-            console.log(data.categories_ids)
             for (var i = 0; i < data.categories.length; i++) {
                 $(selectorId).append('<li id="category'+data.categories_ids[i]+'" class="list__item">'+data.categories[i]+'</li>');
                 onClickCategory('#category'+data.categories_ids[i], '#showcase', data.categories_ids[i]);

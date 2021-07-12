@@ -17,4 +17,7 @@ urlpatterns = [
     path('modify_cart', views.modify_cart),
     path('payment', views.payment),
     path('sort_category', views.sort_category),
+    # TODO: Проработать методы ниже
+    path('seller', views.products_seller),
+    path('delete_product', views.delete_product),
 ]
