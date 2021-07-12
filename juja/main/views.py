@@ -303,10 +303,10 @@ def products_seller(request):
     if not UserDetail.objects.get(user__pk=request.user.id).is_seller:
         return HttpResponse(status=403)
     
+    #if request.method == "GET":
+    #    return render(request, 'seller.html')
     if request.method == "GET":
-        return render(request, 'seller.html')
-    if request.method == "POST":
-        products = Product.objects.filter(seller__pk=request.POST['seller_id']) # Сделать выборку по товарам текущего пользователя если он продавец
+        products = Product.objects.filter(seller__pk=request.user.id) # Сделать выборку по товарам текущего пользователя если он продавец
 
         data = [{
                 'productName': i.name,
