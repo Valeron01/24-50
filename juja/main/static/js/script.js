@@ -221,6 +221,9 @@ function getProductPreviewEditor() {
         dataType: 'html',
         success: function(data) {
             $(document.body).append(data);
+            $('.window__close').on('click', () => {
+                $('.window__close').parent().parent().remove();
+            });
             $('#addProducts_btn').on('click', sendProductPreview("#fileopen"));
         }
     });
@@ -246,23 +249,33 @@ function getSellerProducts() {
 
 function sendProductPreview(file_input_id) {
     var file_input = $(file_input_id);
-    var opened_file = file_input.files[0];
-    console.log(opened_file);
+    
 
-    var data = new FormData();
-    data.append('image', opened_file);
-    data.append('image_name', '123.png');
-    data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+    $('#continueBtn').on('click', () => {
+        var opened_file = file_input.files[0];
+        $.ajax({
+            url: '/add_product',
+            method: 'post',
+            processData : false,
+            contentType : false,
+            data: {
+                product_name: $('#productName').val(),
+                product_category: $('#productCategory').val(),
+                product_decription: $('#productDecript').val(),
+                product_cost: +$('#productCost').val(),
+                image: opened_file,
+                image_name: 'image.png',
+                csrfmiddlewaretoken: getCookie('csrftoken')
+            },
+            success: function(data) {
+                console.log("Успех");
 
-    $.ajax({
-        url: '/add_product',
-        method: 'post',
-        processData : false,
-        contentType : false,
-        data: data,
+            }
+        });
     });
+    
 
-    console.log(data);
+    
 };
 
 // Загрузка контента главной страницы
