@@ -289,16 +289,24 @@ def sort_category(request: HttpRequest()):
     return HttpResponse(status=500) # Загрушка
 
 def top_up_balance(request):
-    #TODO  Пополнение баланса
+    if not request.user.is_authenticated:
+        return HttpResponse(status=403)
     if request.method == 'POST':
+        user = UserDetail.objects.get(user__pk=request.user.id)
+
+        user.balance += float(request.POST['sum'])
+        user.save()
         return HttpResponse(status=200)
     return HttpResponse(status=505)
 
 def products_seller(request):
+    if not UserDetail.objects.get(user__pk=request.user.id).is_seller:
+        return HttpResponse(status=403)
+    
     if request.method == "GET":
         return render(request, 'seller.html')
     if request.method == "POST":
-        products = Product.objects.all() # Сделать выборку по товарам текущего пользователя если он продавец
+        products = Product.objects.filter(seller__pk=request.POST['seller_id']) # Сделать выборку по товарам текущего пользователя если он продавец
 
         data = [{
                 'productName': i.name,
@@ -316,5 +324,7 @@ def products_seller(request):
 
 def delete_product(request):
     if request.method == "POST":
-        #TODO удаление товара 
+        product_id = request.POST['product_id']
+        product = Product.objects.get(id=product_id)
+        product.delete()
         return HttpResponse(status=200)
