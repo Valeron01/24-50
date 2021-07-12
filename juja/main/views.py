@@ -275,22 +275,26 @@ def payment(request):
     if not request.user.is_authenticated:
         return HttpResponse(status=403)
     cart = Cart.objects.filter(user__id=request.user.id)
-    products_ids = cart.values('product')
-    nums = cart.values('num')
 
+    products_ids = cart.values('product')
     products = Product.objects.filter(id__in=products_ids)
-    prices = Product.objects.filter(id__in=products_ids).values('price')
 
     summary_price = 0
 
-    for n, p in zip(nums, prices):
-        summary_price += n['num'] * p['price']
+    for c, p in zip(cart, products):
+        seller_detail = UserDetail.objects.get(user__pk=p.seller.id)
+        computed_price = c.num * p.price
+        summary_price += computed_price
+
+        seller_detail.balance += computed_price
+
 
     ud = UserDetail.objects.get(user=request.user)
     if summary_price < ud.balance:
         ud.balance -= summary_price
         ud.save()
         cart.delete()
+        seller_detail.save()
 
     return JsonResponse({'data': 'success'})
 
