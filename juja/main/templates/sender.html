@@ -1,59 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
-
-<body>
-    <input type="file" id="fileopen" />
-    <input type="button" onclick="send()" value="Send">
-    <div id="result"></div>
-
-    <script>
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-        var file_input = document.getElementById('fileopen');
-
-        
-        
-        function send() {
-            var opened_file = file_input.files[0];
-            console.log(opened_file);
-
-            var data = new FormData();
-            data.append('image', opened_file);
-            data.append('image_name', '123.png');
-            data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-
-            $.ajax({
-                url: '/add_product',
-                method: 'post',
-                processData : false,
-                contentType : false,
-                data: data,
-            });
-
-            console.log(data);
-        };
-    </script>
-</body>
-
-</html>
+{% load static %}
+    <div class="window-wrapper">
+        <div id="offerWindow" class="window">
+            <div class="window__close">
+                <img class="close" src="{% static 'img/close.png'%}" alt="">
+            </div>
+            <div class="window__inner">
+                <h3 class="window__title">Добавить товар</h3>
+                <div class="window__autorize autorize">
+                    <div class="message" id="message"></div>
+                    <form class="window__form form">
+                        <input id="productName" class="form__input" type="text" placeholder="Название">
+                        <input id="productCategory" class="form__input" type="text" placeholder="Категория">
+                        <input id="productDecript" class="form__input" type="text" placeholder="Описание">
+                        <input id="productCost" class="form__input" type="text" placeholder="email">
+                        <input type="file" id="fileopen" />
+                        <div id="offerBtn" class="button form__btn">Продолжить</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>

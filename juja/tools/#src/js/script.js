@@ -208,9 +208,24 @@ function getSellerPage() {
             $('.remove_product').on('click', function () {
                 deleteProduct($( this ).parent());
             });
+            $('#addProducts_btn').on('click', getProductPreviewEditor)
         }
     });
 }
+
+
+function getProductPreviewEditor() {
+    $.ajax({
+        url: '/add_product',
+        method: 'get',
+        dataType: 'html',
+        success: function(data) {
+            $(document.body).append(data);
+            $('#addProducts_btn').on('click', sendProductPreview("#fileopen"));
+        }
+    });
+}
+
 function getSellerProducts() {
     var info;
     $.ajax({
@@ -227,6 +242,29 @@ function getSellerProducts() {
     });
     return info;
 }
+
+
+function sendProductPreview(file_input_id) {
+    var file_input = $(file_input_id);
+    var opened_file = file_input.files[0];
+    console.log(opened_file);
+
+    var data = new FormData();
+    data.append('image', opened_file);
+    data.append('image_name', '123.png');
+    data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+    $.ajax({
+        url: '/add_product',
+        method: 'post',
+        processData : false,
+        contentType : false,
+        data: data,
+    });
+
+    console.log(data);
+};
+
 // Загрузка контента главной страницы
 function getMainPage() {
     $.ajax({
