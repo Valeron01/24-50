@@ -300,7 +300,7 @@ function deleteProduct(parent) {
         url: '/delete_product',
         method: 'post',
         data: {
-            id: id_p,
+            product_id: id_p,
             csrfmiddlewaretoken: getCookie('csrftoken')
         },
         success: function(data) {
