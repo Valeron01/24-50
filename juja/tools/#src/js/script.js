@@ -5,6 +5,14 @@ var userIsLogin = getCookie('logged');
 var userIsSeller = getCookie('seller');
 
 window.onload = function() {
+    
+    check_role();
+    checkAuth(userIsLogin);
+    getMainPage()
+    initEventHandlers();
+    
+}   
+function check_role() {
     $.ajax({
         url: '/auth',
         methos: 'post',
@@ -13,18 +21,15 @@ window.onload = function() {
         },
         async:false,
         success: function(data) {
+            console.log(data);
             setCookie('logged', data.logged);
             setCookie('seller', data.seller);
             userIsLogin = getCookie('logged');
             userIsSeller= getCookie('seller');
         }
     });
-    
-    checkAuth(userIsLogin);
-    getMainPage()
-    initEventHandlers();
-    
-}   
+}
+
 function initEventHandlers() {
     //Кнопка "Вход"
     $("#login").on('click', () => {
@@ -48,6 +53,8 @@ function initEventHandlers() {
                         success: function(data) {
                             if (data.is_logged) {
                                 $('.window__close').trigger('click');
+                                check_role();
+                                checkAuth();
                                 getUserPage(data);
                             } else {
                                 $('.message').text("Неверный логин или пароль").css('display', 'block');
@@ -127,6 +134,7 @@ function initEventHandlers() {
                 setCookie('logged', false);
                 userIsLogin = getCookie('logged');
                 window.location.href = "/";
+                check_role();
                 checkAuth(userIsLogin);
             }
         });
@@ -393,6 +401,7 @@ function addToCart(selector, targetId, targetCount) {
     });
     
 }
+// Удаление из корзины
 function deleteFromCart(selector, targetId) {
     $(selector).on('click', () => {
         var idP = +$(targetId).text();
@@ -415,6 +424,7 @@ function deleteFromCart(selector, targetId) {
         });
     });
 }
+
 // Уменьшение кол-ва тединиц товара
 function minus(selector, target) {
      $(selector).on('click', () => {
@@ -424,6 +434,7 @@ function minus(selector, target) {
         $(target).text(count);
      });  
 }
+
 // Увеличение кол-ва тединиц товара
 function plus(selector, target) {
     $(selector).on('click', () => {
@@ -433,7 +444,6 @@ function plus(selector, target) {
         $(target).text(count);
     });  
 }
-
 
 //Запрос категорий
 function getCategories(selectorId) {
