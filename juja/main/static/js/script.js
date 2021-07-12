@@ -252,21 +252,19 @@ function sendProductPreview(file_input_id) {
     $('#continueBtn').on('click', () => {
         var opened_file = file_input.files[0];
         console.log(getCookie('csrftoken'));
+        var formData = new FormData();
+        formData.append('product_name',$('#productName').val());
+        formData.append('product_category', $('#productCategory').val());
+        formData.append('product_decription', $('#productDecript').val());
+        formData.append('product_cost', +$('#productCost').val());
+        formData.append('image', $('input[type=file]')[0].files[0]);
+        formData.append('image_name', 'image.png');
         $.ajax({
             url: '/add_product',
             method: 'post',
             processData : false,
             contentType : false,
-            data: {
-                csrfmiddlewaretoken: getCookie('csrftoken'),
-                product_name: $('#productName').val(),
-                product_category: $('#productCategory').val(),
-                product_decription: $('#productDecript').val(),
-                product_cost: +$('#productCost').val(),
-                image: opened_file,
-                image_name: 'image.png',
-                
-            },
+            data: formData,
             success: function(data) {
                 console.log(data.csrfmiddlewaretoken);
 

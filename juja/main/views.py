@@ -19,7 +19,6 @@ from django.db import IntegrityError
 from .utils import *
 from .models import *
 
-
 def index(request):
     if request.method == "GET":
         return render(request, 'index.html')
