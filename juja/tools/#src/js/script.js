@@ -249,8 +249,6 @@ function getSellerProducts() {
 
 function sendProductPreview(file_input_id) {
     var file_input = $(file_input_id);
-    
-
     $('#continueBtn').on('click', () => {
         var opened_file = file_input.files[0];
         $.ajax({

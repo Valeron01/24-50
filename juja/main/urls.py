@@ -19,5 +19,5 @@ urlpatterns = [
     path('sort_category', views.sort_category),
     path('seller', views.products_seller),
     path('delete_product', views.delete_product),
-    path('top_up_balance', views.top_up_balance),
+    path('balance', views.top_up_balance),
 ]
