@@ -214,13 +214,12 @@ def add_to_cart(request: HttpRequest):
 
     return HttpResponse(status=501)
 
-#@csrf_exempt
-def add_product(request: HttpRequest): #TODO fix
+def add_product(request: HttpRequest):
     if request.method == 'GET':
         return render(request, 'sender.html')
 
-    #if not request.user.is_authenticated or not request.user.groups.filter(name='sellers').exists():
-    #    return HttpResponse(status=403)
+    if not request.user.is_authenticated or not request.user.groups.filter(name='sellers').exists():
+        return HttpResponse(status=403)
 
     print('-'*50)
     print(request.GET)
