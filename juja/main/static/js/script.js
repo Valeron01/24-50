@@ -5,6 +5,14 @@ var userIsLogin = getCookie('logged');
 var userIsSeller = getCookie('seller');
 
 window.onload = function() {
+    
+    check_role();
+    checkAuth(userIsLogin);
+    getMainPage()
+    initEventHandlers();
+    
+}   
+function check_role() {
     $.ajax({
         url: '/auth',
         methos: 'post',
@@ -13,18 +21,15 @@ window.onload = function() {
         },
         async:false,
         success: function(data) {
+            console.log(data);
             setCookie('logged', data.logged);
             setCookie('seller', data.seller);
             userIsLogin = getCookie('logged');
             userIsSeller= getCookie('seller');
         }
     });
-    
-    checkAuth(userIsLogin);
-    getMainPage()
-    initEventHandlers();
-    
-}   
+}
+
 function initEventHandlers() {
     //Кнопка "Вход"
     $("#login").on('click', () => {
@@ -48,6 +53,8 @@ function initEventHandlers() {
                         success: function(data) {
                             if (data.is_logged) {
                                 $('.window__close').trigger('click');
+                                check_role();
+                                checkAuth();
                                 getUserPage(data);
                             } else {
                                 $('.message').text("Неверный логин или пароль").css('display', 'block');
@@ -127,6 +134,7 @@ function initEventHandlers() {
                 setCookie('logged', false);
                 userIsLogin = getCookie('logged');
                 window.location.href = "/";
+                check_role();
                 checkAuth(userIsLogin);
             }
         });
@@ -200,9 +208,27 @@ function getSellerPage() {
             $('.remove_product').on('click', function () {
                 deleteProduct($( this ).parent());
             });
+            $('#addProducts_btn').on('click', getProductPreviewEditor)
         }
     });
 }
+
+
+function getProductPreviewEditor() {
+    $.ajax({
+        url: '/add_product',
+        method: 'get',
+        dataType: 'html',
+        success: function(data) {
+            $(document.body).append(data);
+            $('.window__close').on('click', () => {
+                $('.window__close').parent().parent().remove();
+            });
+            $('#addProducts_btn').on('click', sendProductPreview("#fileopen"));
+        }
+    });
+}
+
 function getSellerProducts() {
     var info;
     $.ajax({
@@ -219,6 +245,39 @@ function getSellerProducts() {
     });
     return info;
 }
+
+
+function sendProductPreview(file_input_id) {
+    var file_input = $(file_input_id);
+    
+
+    $('#continueBtn').on('click', () => {
+        var opened_file = file_input.files[0];
+        $.ajax({
+            url: '/add_product',
+            method: 'post',
+            processData : false,
+            contentType : false,
+            data: {
+                product_name: $('#productName').val(),
+                product_category: $('#productCategory').val(),
+                product_decription: $('#productDecript').val(),
+                product_cost: +$('#productCost').val(),
+                image: opened_file,
+                image_name: 'image.png',
+                csrfmiddlewaretoken: getCookie('csrftoken')
+            },
+            success: function(data) {
+                console.log("Успех");
+
+            }
+        });
+    });
+    
+
+    
+};
+
 // Загрузка контента главной страницы
 function getMainPage() {
     $.ajax({
@@ -254,7 +313,7 @@ function deleteProduct(parent) {
         url: '/delete_product',
         method: 'post',
         data: {
-            id: id_p,
+            product_id: id_p,
             csrfmiddlewaretoken: getCookie('csrftoken')
         },
         success: function(data) {
@@ -393,6 +452,7 @@ function addToCart(selector, targetId, targetCount) {
     });
     
 }
+// Удаление из корзины
 function deleteFromCart(selector, targetId) {
     $(selector).on('click', () => {
         var idP = +$(targetId).text();
@@ -415,6 +475,7 @@ function deleteFromCart(selector, targetId) {
         });
     });
 }
+
 // Уменьшение кол-ва тединиц товара
 function minus(selector, target) {
      $(selector).on('click', () => {
@@ -424,6 +485,7 @@ function minus(selector, target) {
         $(target).text(count);
      });  
 }
+
 // Увеличение кол-ва тединиц товара
 function plus(selector, target) {
     $(selector).on('click', () => {
@@ -433,7 +495,6 @@ function plus(selector, target) {
         $(target).text(count);
     });  
 }
-
 
 //Запрос категорий
 function getCategories(selectorId) {
