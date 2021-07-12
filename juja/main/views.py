@@ -1,16 +1,25 @@
+import os
+
 from json.encoder import JSONEncoder
+
 from django.contrib.auth.models import User
-from django.http.request import HttpRequest
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from django.template.loader import render_to_string
+from django.contrib.auth.models import Group
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
-from django.db import IntegrityError
+
+from django.http.request import HttpRequest
+from django.http import HttpResponse, JsonResponse
+
+from django.shortcuts import render
+from django.template.loader import render_to_string
+
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
+
 from .utils import *
 from .models import *
-import os
+
+SELLER_GROUP = Group.objects.get(name='sellers')
 
 
 def index(request):
@@ -208,11 +217,11 @@ def add_to_cart(request: HttpRequest):
     return HttpResponse(status=501)
 
 
-def add_product(request: HttpRequest):
+def add_product(request: HttpRequest): #TODO fix
     if request.method == 'GET':
         return render(request, 'sender.html')
 
-    if not request.user.is_authenticated or not UserDetail.objects.get(user=request.user).is_seller:
+    if not request.user.is_authenticated or not request.user.groups.filter(name='sellers').exists():
         return HttpResponse(status=403)
 
     data = request.POST
@@ -220,9 +229,10 @@ def add_product(request: HttpRequest):
 
     image = request.FILES['image']
 
-    product = Product(name=data['name'], description=data['description'],
-                      category=Category.objects.get(name=data['category']),
-                      price=data['price'],
+    product = Product(name=data['product_name'],
+                      description=data['product_description'],
+                      category=Category.objects.get(name=data['product_category']),
+                      price=data['product_cost'],
                       seller=User.objects.get(username=data['username']))
 
     file_ext = image_name[image_name.index('.'):]
@@ -300,7 +310,7 @@ def top_up_balance(request):
     return HttpResponse(status=505)
 
 def products_seller(request):
-    if not UserDetail.objects.get(user__pk=request.user.id).is_seller:
+    if not request.user.groups.filter(name='sellers').exists():
         return HttpResponse(status=403)
     
     if request.method == "GET":
