@@ -75,7 +75,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'juja.wsgi.application'
-
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 ** 2 # 10MB
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
