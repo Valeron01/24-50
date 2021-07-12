@@ -19,9 +19,6 @@ from django.db import IntegrityError
 from .utils import *
 from .models import *
 
-SELLER_GROUP = Group.objects.get(name='sellers')
-
-
 def index(request):
     if request.method == "GET":
         return render(request, 'index.html')
