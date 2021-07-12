@@ -248,8 +248,8 @@ def sort_category(request:HttpRequest()):
         return JsonResponse({'products': data}) #Заглушка
     return HttpResponse(status=500) # Загрушка
 
-# Пополнение баланса
 def top_up_balance(request):
+    #TODO  Пополнение баланса
     if request.method == 'POST':
         return HttpResponse(status=200)
     return HttpResponse(status=505)
@@ -258,7 +258,7 @@ def products_seller(request):
     if request.method == "GET":
         return render(request, 'seller.html')
     if request.method == "POST":
-        products = Product.objects.all()
+        products = Product.objects.all() # Сделать выборку по товарам текущего пользователя если он продавец
 
         data = [{
                 'productName': i.name,
@@ -276,5 +276,5 @@ def products_seller(request):
 
 def delete_product(request):
     if request.method == "POST":
-        # TODO удаление товара 
+        #TODO удаление товара 
         return HttpResponse(status=200)
