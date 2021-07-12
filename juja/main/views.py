@@ -10,6 +10,8 @@ from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from .utils import *
 from .models import *
+import os
+
 
 def index(request):
     if request.method == "GET":
@@ -18,61 +20,76 @@ def index(request):
     if request.method == "POST":
         return render(request, 'main.html')
 
+
 def check_auth(request):
     # Добавил поле "seller"
     return JsonResponse({'logged': request.user.is_authenticated,
                          'seller': request.user.groups.filter(name='sellers').exists()})
 
+
 def register_page(request):
     if request.user.is_authenticated:
-        return HttpResponse('already logged in', status=405)# Если залогинены, отправляем 405
+        # Если залогинены, отправляем 405
+        return HttpResponse('already logged in', status=405)
 
     if request.method == 'GET':
-        return render(request, 'register.html') # отправляем отрендеренный шаблон формы для регистрации
-    
+        # отправляем отрендеренный шаблон формы для регистрации
+        return render(request, 'register.html')
+
     if request.method == 'POST':
         data = request.POST
 
-        if len(data['login']) < 4 or len(data['email']) < 4 or len(data['password']) < 4: # Валидация данных
+        if len(data['login']) < 4 or len(data['email']) < 4 or len(data['password']) < 4:  # Валидация данных
             return HttpResponse(status=400)
         try:
-            user = User.objects.create_user(data['login'], data['email'], data['password']) # пробуем зарегать
-            user_detail = UserDetail(user=user) # Создаём детальную инфу о пользователе
+            user = User.objects.create_user(
+                data['login'], data['email'], data['password'])  # пробуем зарегать
+            # Создаём детальную инфу о пользователе
+            user_detail = UserDetail(user=user)
 
             user.save()
             user_detail.save()
 
-            login(request, user) # логинимся
+            login(request, user)  # логинимся
         except IntegrityError:
-            return JsonResponse({'is_reg': False, 'message': 'такой аккаунт уже есть'}) # Посылаем на
-        
-        return JsonResponse({'is_reg': True, 'user': str(user.email)}) # регистрация успешна
+            # Посылаем на
+            return JsonResponse({'is_reg': False, 'message': 'такой аккаунт уже есть'})
 
-def login_page(request:HttpRequest):
+        # регистрация успешна
+        return JsonResponse({'is_reg': True, 'user': str(user.email)})
+
+
+def login_page(request: HttpRequest):
     if request.user.is_authenticated:
-        return HttpResponse('already logged in', status=405)# Если залогинены, отправляем 405
-
+        # Если залогинены, отправляем 405
+        return HttpResponse('already logged in', status=405)
 
     if request.method == 'GET':
-        return render(request, 'login.html') # отправляем отрендеренный шаблон формы для логина
-    
+        # отправляем отрендеренный шаблон формы для логина
+        return render(request, 'login.html')
+
     if request.method == 'POST':
-        user = authenticate(username=request.POST['login'], password=request.POST['password']) # Ищем пользователя в бд
-        if user is not None: # Если нашли
-            login(request, user) # Логинимся 
-            return  JsonResponse({'is_logged' : True}) # отправляем результат с удачей
+        # Ищем пользователя в бд
+        user = authenticate(
+            username=request.POST['login'], password=request.POST['password'])
+        if user is not None:  # Если нашли
+            login(request, user)  # Логинимся
+            # отправляем результат с удачей
+            return JsonResponse({'is_logged': True})
 
-        return JsonResponse({'is_logged' : False}) # с провалом
+        return JsonResponse({'is_logged': False})  # с провалом
 
-def user_page(request:HttpRequest):
+
+def user_page(request: HttpRequest):
     if request.method == 'GET':
         return render(request, 'user.html')
-    
+
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return HttpResponse(status=403)
 
-        products_ids = Cart.objects.filter(user__id=request.user.id).values('product')
+        products_ids = Cart.objects.filter(
+            user__id=request.user.id).values('product')
         nums = Cart.objects.filter(user__id=request.user.id).values('num')
 
         products = Product.objects.filter(id__in=products_ids)
@@ -81,22 +98,22 @@ def user_page(request:HttpRequest):
         products_info = []
         for i, n in zip(products, nums):
             p = {
-                'productName':i.name,
-                'cost':i.price,
-                'seller':i.seller.username,
-                'description':i.description,
+                'productName': i.name,
+                'cost': i.price,
+                'seller': i.seller.username,
+                'description': i.description,
                 'category': i.category.name,
                 'image': i.image_name,
                 'num': n['num'],
-                'id':i.id
+                'id': i.id
             }
             products_info.append(p)
-        
+
         summary_price = 0
 
         for n, p in zip(nums, prices):
             summary_price += n['num'] * p['price']
-        
+
         data = {
             'username': request.user.username,
             'balance': UserDetail.objects.get(user=request.user).balance,
@@ -112,6 +129,7 @@ def user_page(request:HttpRequest):
         # ну я типо блять тут хуё-моё что-то написал
         return JsonResponse(data)
 
+
 def exit(request):
     if not request.user.is_authenticated:
         return HttpResponse(status=403)
@@ -120,23 +138,25 @@ def exit(request):
         logout(request)
         return HttpResponse(status=200)
 
-def offer(request:HttpRequest):
+
+def offer(request: HttpRequest):
     if not request.user.is_authenticated:
         return HttpResponse(status=403)
-    
+
     if request.method == "GET":
         return render(request, 'offer.html')
     if request.method == "POST":
-        offer_data = OffersData(user=request.user, message=request.POST['message'])
+        offer_data = OffersData(
+            user=request.user, message=request.POST['message'])
 
         user = request.user
         user.first_name = request.POST['firstName']
         user.last_name = request.POST['lastName']
 
-
         user.save()
         offer_data.save()
         return HttpResponse(status=200)
+
 
 def get_products(request):
     products = Product.objects.all()
@@ -153,51 +173,70 @@ def get_products(request):
             for i in products]
     return JsonResponse({'products': data})
 
+
 def get_categories(request):
     if request.method == 'POST':
         categories = Category.objects.all().values('name', 'id')
         categories_names = [i['name'] for i in categories]
         categories_ids = [i['id'] for i in categories]
-    
+
         return JsonResponse({'categories': categories_names, 'categories_ids': categories_ids})
     return HttpResponse(status=500)
 
-def add_to_cart(request:HttpRequest):
+
+def add_to_cart(request: HttpRequest):
     if not request.user.is_authenticated:
         return HttpResponse(status=403)
-    
+
     if request.method == 'POST':
         data = request.POST
-        try: # Обновление уже существующей пары юзер - продукт
-            q = Cart.objects.get(user=request.user, product__pk = data['id'])
+        try:  # Обновление уже существующей пары юзер - продукт
+            q = Cart.objects.get(user=request.user, product__pk=data['id'])
 
             q.num += int(data['num'])
             q.save()
-        except ObjectDoesNotExist: # Добавление нового товара в корзину
-            product = Product.objects.get(pk=data['id']) # Ищем продукт в списке продуктов
+        except ObjectDoesNotExist:  # Добавление нового товара в корзину
+            # Ищем продукт в списке продуктов
+            product = Product.objects.get(pk=data['id'])
 
-            c = Cart(user=request.user, product=product, num=data['num']) # Создаем новую корзину
+            c = Cart(user=request.user, product=product,
+                     num=data['num'])  # Создаем новую корзину
             c.save()
 
         return HttpResponse(status=200)
-    
+
     return HttpResponse(status=501)
 
 
-def add_product(request):
-    if not request.user.is_authenticated or not UserDetail.objects.get(user=request.user).is_seller: # 
+def add_product(request: HttpRequest):
+    if request.method == 'GET':
+        return render(request, 'sender.html')
+
+    if not request.user.is_authenticated or not UserDetail.objects.get(user=request.user).is_seller:
         return HttpResponse(status=403)
-    
+
     data = request.POST
+    image_name = data['image_name']
+
+    image = request.FILES['image']
 
     product = Product(name=data['name'], description=data['description'],
                       category=Category.objects.get(name=data['category']),
-                      price = data['price'],
+                      price=data['price'],
                       seller=User.objects.get(username=data['username']))
-            
+
+    file_ext = image_name[image_name.index('.'):]
+
+    new_image_name = f'{product.id}{file_ext}'
+    image_path = './main/static/img/products/' + new_image_name
+
+    with open(image_path, 'wb') as f:
+        f.write(image.read())
+
     return HttpResponse('OK', status=200)
 
-def modify_cart(request:HttpRequest):
+
+def modify_cart(request: HttpRequest):
     if not request.user.is_authenticated:
         return HttpResponse(status=403)
 
@@ -207,13 +246,13 @@ def modify_cart(request:HttpRequest):
 
     cart = Cart.objects.get(product__pk=product_id)
 
-
     if data[product_id] == 'delete':
         cart.delete()
     elif data[product_id] == '+1':
         pass
-    
-    return JsonResponse({'name':cart.product.name})
+
+    return JsonResponse({'name': cart.product.name})
+
 
 def payment(request):
     if not request.user.is_authenticated:
@@ -229,16 +268,17 @@ def payment(request):
 
     for n, p in zip(nums, prices):
         summary_price += n['num'] * p['price']
-    
+
     ud = UserDetail.objects.get(user=request.user)
     if summary_price < ud.balance:
         ud.balance -= summary_price
         ud.save()
         cart.delete()
-    
-    return JsonResponse({'data':'success'})
 
-def sort_category(request:HttpRequest()):
+    return JsonResponse({'data': 'success'})
+
+
+def sort_category(request: HttpRequest()):
     if request.method == "POST":
         category_id = request.POST['category_id']
 
