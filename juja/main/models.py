@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+#бля ну какте-тои зменения
 class Category(models.Model):
     name = models.CharField(max_length=200)
 
@@ -26,16 +26,14 @@ class Cart(models.Model):
         unique_together = [['user', 'product']]
 
     def __str__(self):
-        return f'{self.id}; {self.user.username} -> {self.product}x{self.num}'
+        return f'{self.id}; {self.user.username} -> {self.product} x {self.num}'
 
 class UserDetail(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
     balance = models.FloatField(default=0)
-    is_seller = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.user.username}, balance: {self.balance}'
-
 
 class OffersData(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
