@@ -184,7 +184,7 @@ function initEventHandlers() {
     $('#personalAccount').on('click', getUserPage);
 
     // Кнопка "Мои товары"
-    $('#seller_products').on('click', getSellerPage)
+    $('#seller_products').on('click', getSellerPage);
 }
 
 
@@ -197,6 +197,7 @@ function getSellerPage() {
             $('#main_page').html(data);
             $('#addProducts_btn').on('click', addProduct);
             var userdata = getUserData();
+            console.log(userdata);
             $('#username').text(userdata.username);
             $('#balance').text(userdata.balance);
             $('#summa').text(userdata.summary_price);
@@ -465,7 +466,6 @@ function deleteFromCart(selector, targetId) {
             csrfmiddlewaretoken: getCookie('csrftoken')
         }
         data[idP] = 'delete',
-        console.log(data)
         $.ajax({
             url: '/modify_cart',
             method: 'post',

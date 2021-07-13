@@ -224,7 +224,7 @@ function getProductPreviewEditor() {
             $('.window__close').on('click', () => {
                 $('.window__close').parent().parent().remove();
             });
-            $('#addProducts_btn').on('click', sendProductPreview("#fileopen"));
+            $('#addProducts_btn').on('click', sendProductPreview("fileopen"));
         }
     });
 }
@@ -248,27 +248,28 @@ function getSellerProducts() {
 
 
 function sendProductPreview(file_input_id) {
-    var file_input = $(file_input_id);
+    var file_input = document.getElementById(file_input_id);
     $('#continueBtn').on('click', () => {
         var opened_file = file_input.files[0];
+        console.log(getCookie('csrftoken'));
+        var formData = new FormData();
+        formData.append('product_name',$('#productName').val());
+        formData.append('product_category', $('#productCategory').val());
+        formData.append('product_decription', $('#productDecript').val());
+        formData.append('product_cost', +$('#productCost').val());
+        formData.append('image', $('input[type=file]')[0].files[0]);
+        formData.append('image_name', 'image.png');
         $.ajax({
             url: '/add_product',
             method: 'post',
             processData : false,
             contentType : false,
-            data: {
-                product_name: $('#productName').val(),
-                product_category: $('#productCategory').val(),
-                product_decription: $('#productDecript').val(),
-                product_cost: +$('#productCost').val(),
-                image: opened_file,
-                image_name: 'image.png',
-                csrfmiddlewaretoken: getCookie('csrftoken')
-            },
+            data: formData,
             success: function(data) {
-                console.log("Успех");
+                console.log(data.csrfmiddlewaretoken);
 
-            }
+            },
+            async: false
         });
     });
     
@@ -459,7 +460,6 @@ function deleteFromCart(selector, targetId) {
             csrfmiddlewaretoken: getCookie('csrftoken')
         }
         data[idP] = 'delete',
-        console.log(data)
         $.ajax({
             url: '/modify_cart',
             method: 'post',

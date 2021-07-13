@@ -360,5 +360,5 @@ def test_page(request):
     
     if request.method == 'POST':
         print('-'*50)
-        print(requets.POST)
+        print(request.POST)
         print(request.FILES)
