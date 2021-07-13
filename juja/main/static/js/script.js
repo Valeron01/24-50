@@ -378,7 +378,9 @@ function topUpBtnHandler() {
                 sum: summa
             },
             success: function(data) {
+                var info = getUserData();
                 $('.window__close').trigger('click');
+                $('#balance').text(info.balance);
                 alert('Баланс пополнен на сумму ' +summa+' рублей');
             },
             async: false
