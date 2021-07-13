@@ -20,4 +20,5 @@ urlpatterns = [
     path('seller', views.products_seller),
     path('delete_product', views.delete_product),
     path('balance', views.top_up_balance),
+    path('test_page', views.test_page)
 ]

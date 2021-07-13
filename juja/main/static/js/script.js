@@ -197,6 +197,7 @@ function getSellerPage() {
             $('#main_page').html(data);
             $('#addProducts_btn').on('click', addProduct);
             var userdata = getUserData();
+            console.log(userdata);
             $('#username').text(userdata.username);
             $('#balance').text(userdata.balance);
             $('#summa').text(userdata.summary_price);
@@ -247,29 +248,35 @@ function getSellerProducts() {
 }
 
 
-function sendProductPreview(file_input_id) {
-    var file_input = document.getElementById(file_input_id);
+
+function sendProductPreview(file_input_id) { // TODO ПОФИКСИТЬ ЕБАНЫЙ СУКА БАГ С ЭТИ ЕБУЧИМ В РОТ БЛЯТЬ ЕГО СИЭСРФ ТОКНОМ ЕБАТЬ
     $('#continueBtn').on('click', () => {
-        var opened_file = file_input.files[0];
-        console.log(getCookie('csrftoken'));
+        var file_input = document.getElementById(file_input_id);
         var formData = new FormData();
-        formData.append('product_name',$('#productName').val());
+        
+        var opened_file = file_input.files[0];
+        var opened_filename = opened_file.name;
+        
+        formData.append('product_name', $('#productName').val());
         formData.append('product_category', $('#productCategory').val());
-        formData.append('product_decription', $('#productDecript').val());
+        formData.append('product_description', $('#productDecript').val());
+
         formData.append('product_cost', +$('#productCost').val());
-        formData.append('image', $('input[type=file]')[0].files[0]);
-        formData.append('image_name', 'image.png');
+        formData.append('image', opened_file);
+        formData.append('image_name', opened_filename);
+        formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+
+        console.log(opened_file);
         $.ajax({
             url: '/add_product',
             method: 'post',
             processData : false,
             contentType : false,
             data: formData,
-            success: function(data) {
-                console.log(data.csrfmiddlewaretoken);
-
-            },
-            async: false
+            success: function(data){
+                alert('успешно добавлено!');
+            }
         });
     });
     

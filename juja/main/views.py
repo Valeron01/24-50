@@ -15,6 +15,7 @@ from django.template.loader import render_to_string
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
+from django.views.decorators.csrf import csrf_exempt
 
 from .utils import *
 from .models import *
@@ -213,34 +214,44 @@ def add_to_cart(request: HttpRequest):
 
     return HttpResponse(status=501)
 
-
+#@csrf_exempt
 def add_product(request: HttpRequest): #TODO fix
     if request.method == 'GET':
         return render(request, 'sender.html')
 
-    if not request.user.is_authenticated or not request.user.groups.filter(name='sellers').exists():
-        return HttpResponse(status=403)
+    #if not request.user.is_authenticated or not request.user.groups.filter(name='sellers').exists():
+    #    return HttpResponse(status=403)
 
-    data = request.POST
-    image_name = data['image_name']
+    print('-'*50)
+    print(request.GET)
+    print(request.POST)
+    print(request.FILES)
+    if request.method =='POST':
+        data = request.POST
 
-    image = request.FILES['image']
+        image = request.FILES['image']
+        image_name = image.name
 
-    product = Product(name=data['product_name'],
+        product = Product(name=data['product_name'],
                       description=data['product_description'],
                       category=Category.objects.get(name=data['product_category']),
                       price=data['product_cost'],
-                      seller=User.objects.get(username=data['username']))
+                      seller=User.objects.get(username=request.user.username))
 
-    file_ext = image_name[image_name.index('.'):]
+        file_ext = image_name[image_name.index('.'):]
 
-    new_image_name = f'{product.id}{file_ext}'
-    image_path = './main/static/img/products/' + new_image_name
+        new_image_name = f'{product.id}{file_ext}'
+        image_path = './main/static/img/products/' + new_image_name
 
-    with open(image_path, 'wb') as f:
-        f.write(image.read())
+        product.image_name = new_image_name
+        product.save()
 
-    return HttpResponse('OK', status=200)
+        with open(image_path, 'wb') as f:
+            f.write(image.read())
+
+        return HttpResponse('OK', status=200)
+    
+    return HttpResponse(status=500)
 
 
 def modify_cart(request: HttpRequest):
@@ -335,3 +346,14 @@ def delete_product(request):
         product = Product.objects.get(id=product_id)
         product.delete()
         return HttpResponse(status=200)
+
+
+
+def test_page(request):
+    if request.method == 'GET':
+        return render(request, 'my_sender.html')
+    
+    if request.method == 'POST':
+        print('-'*50)
+        print(requets.POST)
+        print(request.FILES)
