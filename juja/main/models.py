@@ -6,6 +6,10 @@ class Category(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+    
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
 class Product(models.Model):
     name = models.CharField(max_length=200)
@@ -18,15 +22,22 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'Продукт'
+        verbose_name_plural = 'Продукты'
+
 class Cart(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
     product = models.ForeignKey(Product, models.CASCADE)
     num = models.IntegerField(default=1)
     class Meta:
         unique_together = [['user', 'product']]
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'Корзины'
 
     def __str__(self):
         return f'{self.id}; {self.user.username} -> {self.product} x {self.num}'
+
 
 class UserDetail(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
@@ -34,6 +45,11 @@ class UserDetail(models.Model):
 
     def __str__(self):
         return f'{self.user.username}, balance: {self.balance}'
+    
+    class Meta:
+        verbose_name = 'Детализация пользователя'
+        verbose_name_plural = 'Детализации пользователей'
+
 
 class OffersData(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
@@ -41,3 +57,7 @@ class OffersData(models.Model):
 
     def __str__(self):
         return f'{self.user.username} -> {self.message[:100]}...'
+    
+    class Meta:
+        verbose_name = 'Заявка на становление продавцом'
+        verbose_name_plural = 'Заявки на становление продавцом'
