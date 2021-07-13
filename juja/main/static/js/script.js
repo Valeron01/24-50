@@ -5,30 +5,11 @@ var userIsLogin = getCookie('logged');
 var userIsSeller = getCookie('seller');
 
 window.onload = function() {
-    
     check_role();
     checkAuth(userIsLogin);
     getMainPage()
     initEventHandlers();
-    
-}   
-function check_role() {
-    $.ajax({
-        url: '/auth',
-        methos: 'post',
-        data: {
-            csrfmiddlewaretoken: getCookie('csrftoken')
-        },
-        async:false,
-        success: function(data) {
-            console.log(data);
-            setCookie('logged', data.logged);
-            setCookie('seller', data.seller);
-            userIsLogin = getCookie('logged');
-            userIsSeller= getCookie('seller');
-        }
-    });
-}
+};  
 
 function initEventHandlers() {
     //Кнопка "Вход"
@@ -274,7 +255,8 @@ function sendProductPreview(file_input_id) {
             contentType : false,
             data: formData,
             success: function(data){
-                alert('успешно добавлено!');
+                $('.window__close').trigger('click');
+                alert('Товар успешно добавлено!');
             }
         });
     });
@@ -399,6 +381,26 @@ function checkAuth(value) {
         $(".login").css('display', 'none');
     }
 }
+
+// Проверка роли пользователя
+function check_role() {
+    $.ajax({
+        url: '/auth',
+        methos: 'post',
+        data: {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        },
+        async:false,
+        success: function(data) {
+            console.log(data);
+            setCookie('logged', data.logged);
+            setCookie('seller', data.seller);
+            userIsLogin = getCookie('logged');
+            userIsSeller= getCookie('seller');
+        }
+    });
+}
+
 
 // Получение данных о пользователе: 
 function getUserData() {
