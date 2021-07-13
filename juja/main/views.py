@@ -214,13 +214,12 @@ def add_to_cart(request: HttpRequest):
 
     return HttpResponse(status=501)
 
-#@csrf_exempt
-def add_product(request: HttpRequest): #TODO fix
+def add_product(request: HttpRequest):
     if request.method == 'GET':
         return render(request, 'sender.html')
 
-    #if not request.user.is_authenticated or not request.user.groups.filter(name='sellers').exists():
-    #    return HttpResponse(status=403)
+    if not request.user.is_authenticated or not request.user.groups.filter(name='sellers').exists():
+        return HttpResponse(status=403)
 
     print('-'*50)
     print(request.GET)
@@ -276,22 +275,26 @@ def payment(request):
     if not request.user.is_authenticated:
         return HttpResponse(status=403)
     cart = Cart.objects.filter(user__id=request.user.id)
-    products_ids = cart.values('product')
-    nums = cart.values('num')
 
+    products_ids = cart.values('product')
     products = Product.objects.filter(id__in=products_ids)
-    prices = Product.objects.filter(id__in=products_ids).values('price')
 
     summary_price = 0
 
-    for n, p in zip(nums, prices):
-        summary_price += n['num'] * p['price']
+    for c, p in zip(cart, products):
+        seller_detail = UserDetail.objects.get(user__pk=p.seller.id)
+        computed_price = c.num * p.price
+        summary_price += computed_price
+
+        seller_detail.balance += computed_price
+
 
     ud = UserDetail.objects.get(user=request.user)
     if summary_price < ud.balance:
         ud.balance -= summary_price
         ud.save()
         cart.delete()
+        seller_detail.save()
 
     return JsonResponse({'data': 'success'})
 
@@ -355,5 +358,5 @@ def test_page(request):
     
     if request.method == 'POST':
         print('-'*50)
-        print(requets.POST)
+        print(request.POST)
         print(request.FILES)

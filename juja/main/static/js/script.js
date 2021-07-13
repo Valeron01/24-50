@@ -184,7 +184,7 @@ function initEventHandlers() {
     $('#personalAccount').on('click', getUserPage);
 
     // Кнопка "Мои товары"
-    $('#seller_products').on('click', getSellerPage)
+    $('#seller_products').on('click', getSellerPage);
 }
 
 
@@ -248,8 +248,7 @@ function getSellerProducts() {
 }
 
 
-
-function sendProductPreview(file_input_id) { // TODO ПОФИКСИТЬ ЕБАНЫЙ СУКА БАГ С ЭТИ ЕБУЧИМ В РОТ БЛЯТЬ ЕГО СИЭСРФ ТОКНОМ ЕБАТЬ
+function sendProductPreview(file_input_id) {
     $('#continueBtn').on('click', () => {
         var file_input = document.getElementById(file_input_id);
         var formData = new FormData();
