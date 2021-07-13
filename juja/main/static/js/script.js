@@ -332,13 +332,14 @@ function getUserPage() {
             $('#topUpBtn').on('click', () => {
                 $.ajax({
                     url: '/balance',
-                    method: 'post',
-                    dataType: 'json',
-                    data: {
-                        csrfmiddlewaretoken: getCookie('csrftoken')
-                    },
+                    method: 'get',
+                    dataType: 'html',
                     success: function (data) {
-                        
+                        $(document.body).append(data);
+                        $('#closeBTN').on('click', () => {
+                            $('#closeBTN').parent().parent().remove();
+                        });
+                        $('#continueBtn').on('click', topUpBtnHandler);
                     }
                 });
             });
@@ -364,6 +365,30 @@ function getUserPage() {
     });
 }
 
+function topUpBtnHandler() {
+    var summa = +getValueFromInput('#summa_topUp');
+    if (summa <= 0 || isNaN(summa)) {
+        $('.message').text('Укажите корректное значение!').css('display', 'block');
+    } else {
+        $.ajax({
+            url: 'balance',
+            method: 'post',
+            data: {
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+                sum: summa
+            },
+            success: function(data) {
+                $('.window__close').trigger('click');
+                alert('Баланс пополнен на сумму ' +summa+' рублей');
+            },
+            async: false
+        });
+    }
+}
+
+function getValueFromInput(selector) {
+    return $(selector).val();
+}
 // Проверка на авторизацию
 function checkAuth(value) {
     value = (value == 'true') ? true : false;
@@ -392,7 +417,6 @@ function check_role() {
         },
         async:false,
         success: function(data) {
-            console.log(data);
             setCookie('logged', data.logged);
             setCookie('seller', data.seller);
             userIsLogin = getCookie('logged');

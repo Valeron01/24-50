@@ -320,6 +320,8 @@ def top_up_balance(request):
         user.balance += float(request.POST['sum'])
         user.save()
         return HttpResponse(status=200)
+    if request.method == "GET": 
+        return render(request, 'top_up.html')
     return HttpResponse(status=505)
 
 def products_seller(request):
