@@ -220,22 +220,24 @@ def add_product(request: HttpRequest):
 
     if not request.user.is_authenticated or not request.user.groups.filter(name='sellers').exists():
         return HttpResponse(status=403)
-
-    print('-'*50)
-    print(request.GET)
-    print(request.POST)
-    print(request.FILES)
     if request.method =='POST':
         data = request.POST
 
         image = request.FILES['image']
         image_name = image.name
 
+        try:
+            category = Category.objects.get(name=data['product_category'])
+        except:
+            category = Category(name=data['product_category'])
+            category.save()
+
         product = Product(name=data['product_name'],
                       description=data['product_description'],
-                      category=Category.objects.get(name=data['product_category']),
+                      category=category,
                       price=data['product_cost'],
                       seller=User.objects.get(username=request.user.username))
+        product.save()
 
         file_ext = image_name[image_name.index('.'):]
 
@@ -243,10 +245,10 @@ def add_product(request: HttpRequest):
         image_path = './main/static/img/products/' + new_image_name
 
         product.image_name = new_image_name
-        product.save()
 
         with open(image_path, 'wb') as f:
             f.write(image.read())
+        product.save()
 
         return HttpResponse('OK', status=200)
     
