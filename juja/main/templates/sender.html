@@ -1,0 +1,23 @@
+{% load static %}
+<div class="window-wrapper">
+        <div id="offerWindow" class="window">
+            <div class="window__close">
+                <img class="close" src="{% static 'img/close.png'%}" alt="">
+            </div>
+            <div class="window__inner">
+                <h3 class="window__title">Добавить товар</h3>
+                <div class="window__autorize autorize">
+                    <div class="message" id="message"></div>
+                    <form class="window__form form">
+                        {% csrf_token %}
+                        <input id="productName" class="form__input" type="text" placeholder="Название">
+                        <input id="productCategory" class="form__input" type="text" placeholder="Категория">
+                        <input id="productDecript" class="form__input" type="text" placeholder="Описание">
+                        <input id="productCost" class="form__input" type="text" placeholder="Цена">
+                        <input type="file" id="fileopen" />
+                        <div id="continueBtn" class="button form__btn">Продолжить</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>

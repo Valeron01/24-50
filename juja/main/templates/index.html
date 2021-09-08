@@ -1,4 +1,5 @@
 {% load static %}
+{% csrf_token %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,49 +26,20 @@
             </div>
             <nav class="header__nav menu">
                 <ul class="menu__list list">
-                    <li class="list__item item"><a href="#">Главная</a></li>
-                    <li class="list__item item"><a href="#">Каталог</a></li>
-                    <li id="offer" class="list__item item"><a href="#">Стать продавцом</a></li>
-                    <li id="basket" class="list__item item"><a href="#">Корзина</a></li>
-                    <li id="login" class="list__item item"><a href="#">Вход</a></li>
-                    <li id="register" class="list__item item"><a href="#">Регистрация</a></li>
-                    <li id="personalAccount" class="list__item item"><a href="#">Личный кабинет</a></li>
+                    <li id="mainPage" class="list__item item">Главная</li>
+                    <li id="offer" class="list__item item login">Стать продавцом</li>
+                    <li id="basket" class="list__item item login">Корзина</li>
+                    <li id="login" class="list__item item unlogin">Вход</li>
+                    <li id="register" class="list__item item unlogin">Регистрация</li>
+                    <li id="seller_products" class="list__item item login">Мои товары</li>
+                    <li id="personalAccount" class="list__item item login">Личный кабинет</li>
+                    <li id="exit" class="list__item item login">выход</li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <section id="main_page" class="main wrapper">
-        <div class="main__inner place">
-            <div class="place__category category">
-                <div class="">Категории товаров</div>
-                <ul id="category__list" class="category__list list">
-                    <li id="btn1" class="list__item">Нелюди</li>
-                    <li id="btn2" class="list__item">Категория</li>
-                    <li id="btn3" class="list__item">Категория</li>
-                    <li id="btn4" class="list__item">Категория</li>
-                    <li id="btn5" class="list__item">Категория</li>
-                </ul>
-            </div>
-            <div id="showcase" class="place__showcase showcase">
-                <div class="showcase__product product">
-                    <img class="product__img" src="{% static '/img/products/1.jpg' %}" alt="">
-                    <h3 class="product__name">Львумба (Липецкий)</h3>
-                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
-                    <p class="product__descipt">Огородный десантник</p>
-                    <div class="product__cost cost">12213</div>
-                    <div class="button buy__btn">В корзину</div>
-                </div>
-                <div class="showcase__product product">
-                    <img class="product__img" src="{% static '/img/noimage.png' %}" alt="">
-                    <h3 class="product__name">Львумба (Липецкий)</h3>
-                    <p class="product__category"><span>категория:</span> <span class="category__name">нелюдь</span></p>
-                    <p class="product__descipt">Огородный десантник</p>
-                    <div class="product__cost cost">12213</div>
-                    <div class="button buy__btn">В корзину</div>
-                </div>
-            </div>
-        </div>
     </section>
 
     <footer class="footer wrapper">
@@ -119,10 +91,7 @@
             <p class="footer__location">ВГУ ФКН ИСИТ 2021</p>
         </div>
     </footer>
-
     <script>
-        var csrf_token = '{{ csrf_token }}';
     </script>
-    
 </body>
 </html>
